@@ -16,6 +16,8 @@
 
 package com.hjbalan.mycalendar.widget;
 
+import com.hjbalan.mycalendar.R;
+
 import android.content.Context;
 import android.content.res.Configuration;
 import android.os.Build;
@@ -33,8 +35,6 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.FrameLayout;
 import android.widget.TextView;
-
-import com.hjbalan.mycalendar.R;
 
 import java.text.DateFormatSymbols;
 import java.util.Calendar;
@@ -58,8 +58,11 @@ import java.util.Locale;
 public class TimePicker extends FrameLayout {
 
     private static final boolean DEFAULT_ENABLED_STATE = true;
+
     private boolean mIsEnabled = DEFAULT_ENABLED_STATE;
+
     private static final int HOURS_IN_HALF_DAY = 12;
+
     /**
      * A no-op callback used in the constructor to avoid null checks later in
      * the code.
@@ -68,23 +71,35 @@ public class TimePicker extends FrameLayout {
         public void onTimeChanged(TimePicker view, int hourOfDay, int minute) {
         }
     };
+
     // ui components
     private final NumberPicker mHourSpinner;
+
     private final NumberPicker mMinuteSpinner;
+
     private final NumberPicker mAmPmSpinner;
+
     private final EditText mHourSpinnerInput;
+
     private final EditText mMinuteSpinnerInput;
+
     private final EditText mAmPmSpinnerInput;
+
     private final TextView mDivider;
+
     // Note that the legacy implementation of the TimePicker is
     // using a button for toggling between AM/PM while the new
     // version uses a NumberPicker spinner. Therefore the code
     // accommodates these two cases to be backwards compatible.
     private final Button mAmPmButton;
+
     private final String[] mAmPmStrings;
+
     // state
     private boolean mIs24HourView;
+
     private boolean mIsAm;
+
     // callbacks
     private OnTimeChangedListener mOnTimeChangedListener;
 
@@ -228,7 +243,8 @@ public class TimePicker extends FrameLayout {
         setContentDescriptions();
 
         // If not explicitly specified this view is important for accessibility.
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN && getImportantForAccessibility() == IMPORTANT_FOR_ACCESSIBILITY_AUTO) {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN
+                && getImportantForAccessibility() == IMPORTANT_FOR_ACCESSIBILITY_AUTO) {
             setImportantForAccessibility(IMPORTANT_FOR_ACCESSIBILITY_YES);
         }
     }
@@ -463,8 +479,9 @@ public class TimePicker extends FrameLayout {
     }
 
     private void setContentDescriptions() {
-        if (true)
+        if (true) {
             return; // This is never reached anyway, backport doesn't have increment/decrement buttons
+        }
         // Minute
         trySetContentDescription(mMinuteSpinner, R.id.np__increment,
                 R.string.time_picker_increment_minute_button);
@@ -542,7 +559,9 @@ public class TimePicker extends FrameLayout {
                 return new SavedState[size];
             }
         };
+
         private final int mHour;
+
         private final int mMinute;
 
         private SavedState(Parcelable superState, int hour, int minute) {

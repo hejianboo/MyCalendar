@@ -16,6 +16,11 @@
 
 package com.hjbalan.mycalendar.widget;
 
+import com.hjbalan.mycalendar.R;
+import com.hjbalan.mycalendar.utils.CVArrays;
+import com.hjbalan.mycalendar.utils.ChineseCalendar;
+import com.hjbalan.mycalendar.utils.LunarCalendar;
+
 import android.annotation.SuppressLint;
 import android.annotation.TargetApi;
 import android.content.Context;
@@ -40,11 +45,6 @@ import android.widget.EditText;
 import android.widget.FrameLayout;
 import android.widget.LinearLayout;
 import android.widget.TextView;
-
-import com.hjbalan.mycalendar.R;
-import com.hjbalan.mycalendar.utils.CVArrays;
-import com.hjbalan.mycalendar.utils.ChineseCalendar;
-import com.hjbalan.mycalendar.utils.LunarCalendar;
 
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
@@ -80,38 +80,68 @@ public class DatePicker extends FrameLayout {
     private static final String LOG_TAG = DatePicker.class.getSimpleName();
 
     private static final String DATE_FORMAT = "MM/dd/yyyy";
+
     private final java.text.DateFormat mDateFormat = new SimpleDateFormat(DATE_FORMAT);
+
     private static final int DEFAULT_START_YEAR = 1900;
+
     private static final int DEFAULT_END_YEAR = 2100;
+
     private static final boolean DEFAULT_CALENDAR_VIEW_SHOWN = true;
+
     private static final boolean DEFAULT_SPINNERS_SHOWN = true;
+
     private static final boolean DEFAULT_ENABLED_STATE = true;
+
     private boolean mIsEnabled = DEFAULT_ENABLED_STATE;
+
     private final LinearLayout mSpinners;
+
     private final NumberPicker mDaySpinner;
+
     private final NumberPicker mMonthSpinner;
+
     private final NumberPicker mYearSpinner;
+
     private final EditText mDaySpinnerInput;
 
     // private final CalendarView mCalendarView;
     private final EditText mMonthSpinnerInput;
+
     private final EditText mYearSpinnerInput;
+
     private Locale mCurrentLocale;
+
     private OnDateChangedListener mOnDateChangedListener;
+
     private String[] mShortMonths;
+
     private String[] mChineseMonths;
+
     private String[] mNumberOfChineseDays;
+
     private int mNumberOfMonths;
+
     private Calendar mTempDate;
+
     private Calendar mMinDate;
+
     private Calendar mMaxDate;
+
     private Calendar mCurrentDate;
+
     private Calendar mSelectedDate;
+
     private int mCurrentChineseYear = 0;
+
     private int mCurrentChineseMonth = 1;
+
     private int mCurrentChineseDay = 0;
+
     private int[] mMinChineseDate;
+
     private int[] mMaxChineseDate;
+
     private boolean mIsChineseCalendar = false;
 
     public DatePicker(Context context) {
@@ -147,7 +177,8 @@ public class DatePicker extends FrameLayout {
                 .getSystemService(Context.LAYOUT_INFLATER_SERVICE);
         inflater.inflate(layoutResourceId, this, true);
 
-        NumberPicker.OnValueChangeListener onChangeListener = new NumberPicker.OnValueChangeListener() {
+        NumberPicker.OnValueChangeListener onChangeListener
+                = new NumberPicker.OnValueChangeListener() {
             public void onValueChange(NumberPicker picker, int oldVal, int newVal) {
                 updateInputState();
                 mTempDate.setTimeInMillis(mCurrentDate.getTimeInMillis());
@@ -675,7 +706,7 @@ public class DatePicker extends FrameLayout {
      * @param onDateChangedListener How user is notified date is changed by user, can be null.
      */
     public void init(int year, int monthOfYear, int dayOfMonth,
-                     OnDateChangedListener onDateChangedListener) {
+            OnDateChangedListener onDateChangedListener) {
         setDate(year, monthOfYear, dayOfMonth);
         updateSpinners();
         // updateCalendarView();
@@ -955,8 +986,11 @@ public class DatePicker extends FrameLayout {
                 return new SavedState[size];
             }
         };
+
         private final int mYear;
+
         private final int mMonth;
+
         private final int mDay;
 
         /**

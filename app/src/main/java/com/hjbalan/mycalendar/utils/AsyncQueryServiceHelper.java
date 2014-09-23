@@ -1,5 +1,7 @@
 package com.hjbalan.mycalendar.utils;
 
+import com.hjbalan.mycalendar.utils.AsyncQueryService.Operation;
+
 import android.app.IntentService;
 import android.content.ContentProviderOperation;
 import android.content.ContentResolver;
@@ -15,8 +17,6 @@ import android.os.RemoteException;
 import android.os.SystemClock;
 import android.util.Log;
 
-import com.hjbalan.mycalendar.utils.AsyncQueryService.Operation;
-
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Iterator;
@@ -25,9 +25,11 @@ import java.util.concurrent.Delayed;
 import java.util.concurrent.TimeUnit;
 
 public class AsyncQueryServiceHelper extends IntentService {
+
     private static final String TAG = "AsyncQuery";
 
-    private static final PriorityQueue<OperationInfo> sWorkQueue = new PriorityQueue<OperationInfo>();
+    private static final PriorityQueue<OperationInfo> sWorkQueue
+            = new PriorityQueue<OperationInfo>();
 
     protected Class<AsyncQueryService> mService = AsyncQueryService.class;
 
@@ -42,8 +44,7 @@ public class AsyncQueryServiceHelper extends IntentService {
     /**
      * Queues the operation for execution
      *
-     * @param context
-     * @param args    OperationInfo object describing the operation
+     * @param args OperationInfo object describing the operation
      */
     static public void queueOperation(Context context, OperationInfo args) {
         // Set the schedule time for execution based on the desired delay.
@@ -168,7 +169,7 @@ public class AsyncQueryServiceHelper extends IntentService {
                         cursor = resolver.query(args.uri, args.projection, args.selection,
                                 args.selectionArgs, args.orderBy);
                     /*
-					 * Calling getCount() causes the cursor window to be filled,
+                                         * Calling getCount() causes the cursor window to be filled,
 					 * which will make the first access on the main thread a lot
 					 * faster
 					 */
@@ -217,7 +218,7 @@ public class AsyncQueryServiceHelper extends IntentService {
             }
 
 			/*
-			 * passing the original token value back to the caller on top of the
+                         * passing the original token value back to the caller on top of the
 			 * event values in arg1.
 			 */
             Message reply = args.handler.obtainMessage(args.token);
@@ -258,19 +259,33 @@ public class AsyncQueryServiceHelper extends IntentService {
     }
 
     protected static class OperationInfo implements Delayed {
+
         public int token; // Used for cancel
+
         public int op;
+
         public ContentResolver resolver;
+
         public Uri uri;
+
         public String authority;
+
         public Handler handler;
+
         public String[] projection;
+
         public String selection;
+
         public String[] selectionArgs;
+
         public String orderBy;
+
         public Object result;
+
         public Object cookie;
+
         public ContentValues values;
+
         public ArrayList<ContentProviderOperation> cpo;
 
         /**

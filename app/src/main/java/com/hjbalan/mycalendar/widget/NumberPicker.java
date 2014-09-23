@@ -16,6 +16,8 @@
 
 package com.hjbalan.mycalendar.widget;
 
+import com.hjbalan.mycalendar.R;
+
 import android.content.Context;
 import android.content.res.ColorStateList;
 import android.content.res.TypedArray;
@@ -53,8 +55,6 @@ import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.LinearLayout;
 import android.widget.TextView;
-
-import com.hjbalan.mycalendar.R;
 
 import java.text.DecimalFormatSymbols;
 import java.util.ArrayList;
@@ -98,55 +98,69 @@ public class NumberPicker extends LinearLayout {
      * The number of items show in the selector wheel.
      */
     private static final int SELECTOR_WHEEL_ITEM_COUNT = 3;
+
     /**
      * The index of the middle selector item.
      */
     private static final int SELECTOR_MIDDLE_ITEM_INDEX = SELECTOR_WHEEL_ITEM_COUNT / 2;
+
     /**
      * The selector indices whose value are show by the selector.
      */
     private final int[] mSelectorIndices = new int[SELECTOR_WHEEL_ITEM_COUNT];
+
     /**
      * The default update interval during long press.
      */
     private static final long DEFAULT_LONG_PRESS_UPDATE_INTERVAL = 300;
+
     /**
      * The speed for updating the value form long press.
      */
     private long mLongPressUpdateInterval = DEFAULT_LONG_PRESS_UPDATE_INTERVAL;
+
     /**
      * The coefficient by which to adjust (divide) the max fling velocity.
      */
     private static final int SELECTOR_MAX_FLING_VELOCITY_ADJUSTMENT = 8;
+
     /**
      * The the duration for adjusting the selector wheel.
      */
     private static final int SELECTOR_ADJUSTMENT_DURATION_MILLIS = 800;
+
     /**
      * The duration of scrolling while snapping to a given position.
      */
     private static final int SNAP_SCROLL_DURATION = 300;
+
     /**
      * The strength of fading in the top and bottom while drawing the selector.
      */
     private static final float TOP_AND_BOTTOM_FADING_EDGE_STRENGTH = 0.9f;
+
     /**
      * The default unscaled height of the selection divider.
      */
     private static final int UNSCALED_DEFAULT_SELECTION_DIVIDER_HEIGHT = 2;
+
     /**
      * The default unscaled distance between the selection dividers.
      */
     private static final int UNSCALED_DEFAULT_SELECTION_DIVIDERS_DISTANCE = 48;
+
     /**
      * The resource id for the default layout.
      */
     private static final int DEFAULT_LAYOUT_RESOURCE_ID = 0;
+
     /**
      * Constant for unspecified size.
      */
     private static final int SIZE_UNSPECIFIED = -1;
+
     private static final TwoDigitFormatter sTwoDigitFormatter = new TwoDigitFormatter();
+
     /**
      * The numbers accepted by the input text's {@link android.view.LayoutInflater.Filter}
      */
@@ -160,34 +174,42 @@ public class NumberPicker extends LinearLayout {
             '\u06f0', '\u06f1', '\u06f2', '\u06f3', '\u06f4', '\u06f5', '\u06f6', '\u06f7', '\u06f8'
             , '\u06f9'
     };
+
     /**
      * The increment button.
      */
     private final ImageButton mIncrementButton;
+
     /**
      * The decrement button.
      */
     private final ImageButton mDecrementButton;
+
     /**
      * The text for showing the current value.
      */
     private final EditText mInputText;
+
     /**
      * The distance between the two selection dividers.
      */
     private final int mSelectionDividersDistance;
+
     /**
      * The min height of this widget.
      */
     private final int mMinHeight;
+
     /**
      * The max height of this widget.
      */
     private final int mMaxHeight;
+
     /**
      * The max width of this widget.
      */
     private final int mMinWidth;
+
     /**
      * Flag whether to compute the max width.
      */
@@ -197,143 +219,179 @@ public class NumberPicker extends LinearLayout {
      * The height of the text.
      */
     private final int mTextSize;
+
     /**
      * Cache for the string representation of selector indices.
      */
     private final SparseArray<String> mSelectorIndexToStringCache = new SparseArray<String>();
+
     /**
      * The {@link android.graphics.Paint} for drawing the selector.
      */
     private final Paint mSelectorWheelPaint;
+
     /**
-     * The {@link android.graphics.drawable.Drawable} for pressed virtual (increment/decrement) buttons.
+     * The {@link android.graphics.drawable.Drawable} for pressed virtual (increment/decrement)
+     * buttons.
      */
     private final Drawable mVirtualButtonPressedDrawable;
+
     /**
      * The {@link Scroller} responsible for flinging the selector.
      */
     private final Scroller mFlingScroller;
+
     /**
      * The {@link Scroller} responsible for adjusting the selector.
      */
     private final Scroller mAdjustScroller;
+
     /**
      * The back ground color used to optimize scroller fading.
      */
     private final int mSolidColor;
+
     /**
      * Flag whether this widget has a selector wheel.
      */
     private final boolean mHasSelectorWheel;
+
     /**
      * Divider for showing item to be selected while scrolling
      */
     private final Drawable mSelectionDivider;
+
     /**
      * The height of the selection divider.
      */
     private final int mSelectionDividerHeight;
+
     /**
      * Helper class for managing pressed state of the virtual buttons.
      */
     private final PressedStateHelper mPressedStateHelper;
+
     /**
      * The max width of this widget.
      */
     private int mMaxWidth;
+
     /**
      * The height of the gap between text elements if the selector wheel.
      */
     private int mSelectorTextGapHeight;
+
     /**
      * The values to be displayed instead the indices.
      */
     private String[] mDisplayedValues;
+
     /**
      * Lower value of the range of numbers allowed for the NumberPicker
      */
     private int mMinValue;
+
     /**
      * Upper value of the range of numbers allowed for the NumberPicker
      */
     private int mMaxValue;
+
     /**
      * Current value of this NumberPicker
      */
     private int mValue;
+
     /**
      * Listener to be notified upon current value change.
      */
     private OnValueChangeListener mOnValueChangeListener;
+
     /**
      * Listener to be notified upon scroll state change.
      */
     private OnScrollListener mOnScrollListener;
+
     /**
      * Formatter for for displaying the current value.
      */
     private Formatter mFormatter;
+
     /**
      * The height of a selector element (text + gap).
      */
     private int mSelectorElementHeight;
+
     /**
      * The initial offset of the scroll selector.
      */
     private int mInitialScrollOffset = Integer.MIN_VALUE;
+
     /**
      * The current offset of the scroll selector.
      */
     private int mCurrentScrollOffset;
+
     /**
      * The previous Y coordinate while scrolling the selector.
      */
     private int mPreviousScrollerY;
+
     /**
      * Handle to the reusable command for setting the input text selection.
      */
     private SetSelectionCommand mSetSelectionCommand;
+
     /**
      * Handle to the reusable command for changing the current value from long
      * press by one.
      */
     private ChangeCurrentByOneFromLongPressCommand mChangeCurrentByOneFromLongPressCommand;
+
     /**
      * Command for beginning an edit of the current value via IME on long press.
      */
     private BeginSoftInputOnLongPressCommand mBeginSoftInputOnLongPressCommand;
+
     /**
      * The Y position of the last down event.
      */
     private float mLastDownEventY;
+
     /**
      * The time of the last down event.
      */
     private long mLastDownEventTime;
+
     /**
      * The Y position of the last down or move event.
      */
     private float mLastDownOrMoveEventY;
+
     /**
      * Determines speed during touch scrolling.
      */
     private VelocityTracker mVelocityTracker;
+
     /**
      * @see android.view.ViewConfiguration#getScaledTouchSlop()
      */
     private int mTouchSlop;
+
     /**
      * @see android.view.ViewConfiguration#getScaledMinimumFlingVelocity()
      */
     private int mMinimumFlingVelocity;
+
     /**
      * @see android.view.ViewConfiguration#getScaledMaximumFlingVelocity()
      */
     private int mMaximumFlingVelocity;
+
     /**
      * Flag whether the selector should wrap around.
      */
     private boolean mWrapSelectorWheel;
+
     /**
      * The current scroll state of the number picker.
      */
@@ -379,6 +437,7 @@ public class NumberPicker extends LinearLayout {
      * Provider to report to clients the semantic structure of this widget.
      */
     private SupportAccessibilityNodeProvider mAccessibilityNodeProvider;
+
     /**
      * The keycode of the last handled DPAD down event.
      */
@@ -791,7 +850,8 @@ public class NumberPicker extends LinearLayout {
                     int deltaMoveY = (int) Math.abs(eventY - mLastDownEventY);
                     long deltaTime = event.getEventTime() - mLastDownEventTime;
                     long tapTimeout = ViewConfiguration.getTapTimeout();
-                    if (deltaMoveY <= mTouchSlop) { // && deltaTime < ViewConfiguration.getTapTimeout()) {
+                    if (deltaMoveY
+                            <= mTouchSlop) { // && deltaTime < ViewConfiguration.getTapTimeout()) {
                         if (mShowSoftInputOnTap) {
                             mShowSoftInputOnTap = false;
                             showSoftInput();
@@ -888,7 +948,8 @@ public class NumberPicker extends LinearLayout {
             return super.dispatchHoverEvent(event);
         }
 
-        if (((AccessibilityManager) getContext().getSystemService(Context.ACCESSIBILITY_SERVICE)).isEnabled()) {
+        if (((AccessibilityManager) getContext().getSystemService(Context.ACCESSIBILITY_SERVICE))
+                .isEnabled()) {
             final int eventY = (int) event.getY();
             final int hoveredVirtualViewId;
             if (eventY < mTopSelectionDividerTop) {
@@ -1049,7 +1110,8 @@ public class NumberPicker extends LinearLayout {
      * Shows the soft input for its input text.
      */
     private void showSoftInput() {
-        InputMethodManager inputMethodManager = (InputMethodManager) getContext().getSystemService(Context.INPUT_METHOD_SERVICE);
+        InputMethodManager inputMethodManager = (InputMethodManager) getContext()
+                .getSystemService(Context.INPUT_METHOD_SERVICE);
         if (inputMethodManager != null) {
             if (mHasSelectorWheel) {
                 mInputText.setVisibility(View.VISIBLE);
@@ -1063,7 +1125,8 @@ public class NumberPicker extends LinearLayout {
      * Hides the soft input if it is active for the input text.
      */
     private void hideSoftInput() {
-        InputMethodManager inputMethodManager = (InputMethodManager) getContext().getSystemService(Context.INPUT_METHOD_SERVICE);
+        InputMethodManager inputMethodManager = (InputMethodManager) getContext()
+                .getSystemService(Context.INPUT_METHOD_SERVICE);
         if (inputMethodManager != null && inputMethodManager.isActive(mInputText)) {
             inputMethodManager.hideSoftInputFromWindow(getWindowToken(), 0);
             if (mHasSelectorWheel) {
@@ -1176,24 +1239,36 @@ public class NumberPicker extends LinearLayout {
     /**
      * Set the current value for the number picker.
      * <p>
-     * If the argument is less than the {@link com.hjbalan.mycalendar.widget.NumberPicker#getMinValue()} and
-     * {@link com.hjbalan.mycalendar.widget.NumberPicker#getWrapSelectorWheel()} is <code>false</code> the
-     * current value is set to the {@link com.hjbalan.mycalendar.widget.NumberPicker#getMinValue()} value.
+     * If the argument is less than the {@link com.hjbalan.mycalendar.widget.NumberPicker#getMinValue()}
+     * and
+     * {@link com.hjbalan.mycalendar.widget.NumberPicker#getWrapSelectorWheel()} is
+     * <code>false</code> the
+     * current value is set to the {@link com.hjbalan.mycalendar.widget.NumberPicker#getMinValue()}
+     * value.
      * </p>
      * <p>
-     * If the argument is less than the {@link com.hjbalan.mycalendar.widget.NumberPicker#getMinValue()} and
-     * {@link com.hjbalan.mycalendar.widget.NumberPicker#getWrapSelectorWheel()} is <code>true</code> the
-     * current value is set to the {@link com.hjbalan.mycalendar.widget.NumberPicker#getMaxValue()} value.
+     * If the argument is less than the {@link com.hjbalan.mycalendar.widget.NumberPicker#getMinValue()}
+     * and
+     * {@link com.hjbalan.mycalendar.widget.NumberPicker#getWrapSelectorWheel()} is
+     * <code>true</code> the
+     * current value is set to the {@link com.hjbalan.mycalendar.widget.NumberPicker#getMaxValue()}
+     * value.
      * </p>
      * <p>
-     * If the argument is less than the {@link com.hjbalan.mycalendar.widget.NumberPicker#getMaxValue()} and
-     * {@link com.hjbalan.mycalendar.widget.NumberPicker#getWrapSelectorWheel()} is <code>false</code> the
-     * current value is set to the {@link com.hjbalan.mycalendar.widget.NumberPicker#getMaxValue()} value.
+     * If the argument is less than the {@link com.hjbalan.mycalendar.widget.NumberPicker#getMaxValue()}
+     * and
+     * {@link com.hjbalan.mycalendar.widget.NumberPicker#getWrapSelectorWheel()} is
+     * <code>false</code> the
+     * current value is set to the {@link com.hjbalan.mycalendar.widget.NumberPicker#getMaxValue()}
+     * value.
      * </p>
      * <p>
-     * If the argument is less than the {@link com.hjbalan.mycalendar.widget.NumberPicker#getMaxValue()} and
-     * {@link com.hjbalan.mycalendar.widget.NumberPicker#getWrapSelectorWheel()} is <code>true</code> the
-     * current value is set to the {@link com.hjbalan.mycalendar.widget.NumberPicker#getMinValue()} value.
+     * If the argument is less than the {@link com.hjbalan.mycalendar.widget.NumberPicker#getMaxValue()}
+     * and
+     * {@link com.hjbalan.mycalendar.widget.NumberPicker#getWrapSelectorWheel()} is
+     * <code>true</code> the
+     * current value is set to the {@link com.hjbalan.mycalendar.widget.NumberPicker#getMinValue()}
+     * value.
      * </p>
      *
      * @param value The current value.
@@ -1352,8 +1427,9 @@ public class NumberPicker extends LinearLayout {
             if (mIncrementVirtualButtonPressed) {
                 //mVirtualButtonPressedDrawable.setState(PRESSED_STATE_SET);
                 mVirtualButtonPressedDrawable.setState(PRESSED_ENABLED_STATE_SET);
-                mVirtualButtonPressedDrawable.setBounds(0, mBottomSelectionDividerBottom, getRight(),
-                        getBottom());
+                mVirtualButtonPressedDrawable
+                        .setBounds(0, mBottomSelectionDividerBottom, getRight(),
+                                getBottom());
                 mVirtualButtonPressedDrawable.draw(canvas);
             }
         }
@@ -1808,7 +1884,8 @@ public class NumberPicker extends LinearLayout {
     }
 
     /**
-     * Posts an {@link com.hjbalan.mycalendar.widget.NumberPicker.SetSelectionCommand} from the given <code>selectionStart
+     * Posts an {@link com.hjbalan.mycalendar.widget.NumberPicker.SetSelectionCommand} from the
+     * given <code>selectionStart
      * </code> to <code>selectionEnd</code>.
      */
     private void postSetSelectionCommand(int selectionStart, int selectionEnd) {
@@ -1915,9 +1992,13 @@ public class NumberPicker extends LinearLayout {
      * format().
      */
     private static class TwoDigitFormatter implements Formatter {
+
         final StringBuilder mBuilder = new StringBuilder();
+
         final Object[] mArgs = new Object[1];
+
         char mZeroDigit;
+
         java.util.Formatter mFmt;
 
         TwoDigitFormatter() {
@@ -2034,13 +2115,17 @@ public class NumberPicker extends LinearLayout {
     }
 
     class PressedStateHelper implements Runnable {
+
         public static final int BUTTON_INCREMENT = 1;
+
         public static final int BUTTON_DECREMENT = 2;
 
         private final int MODE_PRESS = 1;
+
         private final int MODE_TAPPED = 2;
 
         private int mManagedButton;
+
         private int mMode;
 
         public void cancel() {
@@ -2118,6 +2203,7 @@ public class NumberPicker extends LinearLayout {
      * Command for setting the input text selection.
      */
     class SetSelectionCommand implements Runnable {
+
         private int mSelectionStart;
 
         private int mSelectionEnd;
@@ -2131,6 +2217,7 @@ public class NumberPicker extends LinearLayout {
      * Command for changing the current value from a long press by one.
      */
     class ChangeCurrentByOneFromLongPressCommand implements Runnable {
+
         private boolean mIncrement;
 
         private void setStep(boolean increment) {
@@ -2175,8 +2262,9 @@ public class NumberPicker extends LinearLayout {
         }
 
         public void sendAccessibilityEventForVirtualView(int virtualViewId, int eventType) {
-            if (mProvider != null)
+            if (mProvider != null) {
                 mProvider.sendAccessibilityEventForVirtualView(virtualViewId, eventType);
+            }
         }
     }
 
@@ -2184,6 +2272,7 @@ public class NumberPicker extends LinearLayout {
      * Class for managing virtual view tree rooted at this picker.
      */
     class AccessibilityNodeProviderImpl extends AccessibilityNodeProvider {
+
         private static final int UNDEFINED = Integer.MIN_VALUE;
 
         private static final int VIRTUAL_VIEW_ID_INCREMENT = 1;
@@ -2203,7 +2292,8 @@ public class NumberPicker extends LinearLayout {
             switch (virtualViewId) {
                 case View.NO_ID:
                     return createAccessibilityNodeInfoForNumberPicker(getScrollX(), getScrollY(),
-                            getScrollX() + (getRight() - getLeft()), getScrollY() + (getBottom() - getTop()));
+                            getScrollX() + (getRight() - getLeft()),
+                            getScrollY() + (getBottom() - getTop()));
                 case VIRTUAL_VIEW_ID_DECREMENT:
                     return createAccessibilityNodeInfoForVirtualButton(VIRTUAL_VIEW_ID_DECREMENT,
                             getVirtualDecrementButtonText(), getScrollX(), getScrollY(),
@@ -2215,14 +2305,15 @@ public class NumberPicker extends LinearLayout {
                     return createAccessibilityNodeInfoForVirtualButton(VIRTUAL_VIEW_ID_INCREMENT,
                             getVirtualIncrementButtonText(), getScrollX(),
                             mBottomSelectionDividerBottom - mSelectionDividerHeight,
-                            getScrollX() + (getRight() - getLeft()), getScrollY() + (getBottom() - getTop()));
+                            getScrollX() + (getRight() - getLeft()),
+                            getScrollY() + (getBottom() - getTop()));
             }
             return super.createAccessibilityNodeInfo(virtualViewId);
         }
 
         @Override
         public List<AccessibilityNodeInfo> findAccessibilityNodeInfosByText(String searched,
-                                                                            int virtualViewId) {
+                int virtualViewId) {
             if (TextUtils.isEmpty(searched)) {
                 return Collections.emptyList();
             }
@@ -2258,7 +2349,8 @@ public class NumberPicker extends LinearLayout {
                             if (mAccessibilityFocusedView != virtualViewId) {
                                 mAccessibilityFocusedView = virtualViewId;
                                 // requestAccessibilityFocus();
-                                performAccessibilityAction(AccessibilityNodeInfo.ACTION_ACCESSIBILITY_FOCUS, null);
+                                performAccessibilityAction(
+                                        AccessibilityNodeInfo.ACTION_ACCESSIBILITY_FOCUS, null);
                                 return true;
                             }
                         }
@@ -2267,7 +2359,9 @@ public class NumberPicker extends LinearLayout {
                             if (mAccessibilityFocusedView == virtualViewId) {
                                 mAccessibilityFocusedView = UNDEFINED;
                                 // clearAccessibilityFocus();
-                                performAccessibilityAction(AccessibilityNodeInfo.ACTION_CLEAR_ACCESSIBILITY_FOCUS, null);
+                                performAccessibilityAction(
+                                        AccessibilityNodeInfo.ACTION_CLEAR_ACCESSIBILITY_FOCUS,
+                                        null);
                                 return true;
                             }
                             return false;
@@ -2355,7 +2449,8 @@ public class NumberPicker extends LinearLayout {
                                 mAccessibilityFocusedView = virtualViewId;
                                 sendAccessibilityEventForVirtualView(virtualViewId,
                                         AccessibilityEvent.TYPE_VIEW_ACCESSIBILITY_FOCUSED);
-                                invalidate(0, mBottomSelectionDividerBottom, getRight(), getBottom());
+                                invalidate(0, mBottomSelectionDividerBottom, getRight(),
+                                        getBottom());
                                 return true;
                             }
                         }
@@ -2365,7 +2460,8 @@ public class NumberPicker extends LinearLayout {
                                 mAccessibilityFocusedView = UNDEFINED;
                                 sendAccessibilityEventForVirtualView(virtualViewId,
                                         AccessibilityEvent.TYPE_VIEW_ACCESSIBILITY_FOCUS_CLEARED);
-                                invalidate(0, mBottomSelectionDividerBottom, getRight(), getBottom());
+                                invalidate(0, mBottomSelectionDividerBottom, getRight(),
+                                        getBottom());
                                 return true;
                             }
                         }
@@ -2377,7 +2473,8 @@ public class NumberPicker extends LinearLayout {
                     switch (action) {
                         case AccessibilityNodeInfo.ACTION_CLICK: {
                             if (NumberPicker.this.isEnabled()) {
-                                final boolean increment = (virtualViewId == VIRTUAL_VIEW_ID_INCREMENT);
+                                final boolean increment = (virtualViewId
+                                        == VIRTUAL_VIEW_ID_INCREMENT);
                                 NumberPicker.this.changeValueByOne(increment);
                                 sendAccessibilityEventForVirtualView(virtualViewId,
                                         AccessibilityEvent.TYPE_VIEW_CLICKED);
@@ -2436,7 +2533,8 @@ public class NumberPicker extends LinearLayout {
         }
 
         private void sendAccessibilityEventForVirtualText(int eventType) {
-            if (((AccessibilityManager) getContext().getSystemService(Context.ACCESSIBILITY_SERVICE)).isEnabled()) {
+            if (((AccessibilityManager) getContext()
+                    .getSystemService(Context.ACCESSIBILITY_SERVICE)).isEnabled()) {
                 AccessibilityEvent event = AccessibilityEvent.obtain(eventType);
                 mInputText.onInitializeAccessibilityEvent(event);
                 mInputText.onPopulateAccessibilityEvent(event);
@@ -2446,8 +2544,9 @@ public class NumberPicker extends LinearLayout {
         }
 
         private void sendAccessibilityEventForVirtualButton(int virtualViewId, int eventType,
-                                                            String text) {
-            if (((AccessibilityManager) getContext().getSystemService(Context.ACCESSIBILITY_SERVICE)).isEnabled()) {
+                String text) {
+            if (((AccessibilityManager) getContext()
+                    .getSystemService(Context.ACCESSIBILITY_SERVICE)).isEnabled()) {
                 AccessibilityEvent event = AccessibilityEvent.obtain(eventType);
                 event.setClassName(Button.class.getName());
                 event.setPackageName(getContext().getPackageName());
@@ -2459,7 +2558,7 @@ public class NumberPicker extends LinearLayout {
         }
 
         private void findAccessibilityNodeInfosByTextInChild(String searchedLowerCase,
-                                                             int virtualViewId, List<AccessibilityNodeInfo> outResult) {
+                int virtualViewId, List<AccessibilityNodeInfo> outResult) {
             switch (virtualViewId) {
                 case VIRTUAL_VIEW_ID_DECREMENT: {
                     String text = getVirtualDecrementButtonText();
@@ -2508,7 +2607,7 @@ public class NumberPicker extends LinearLayout {
         }
 
         private AccessibilityNodeInfo createAccessibilityNodeInfoForVirtualButton(int virtualViewId,
-                                                                                  String text, int left, int top, int right, int bottom) {
+                String text, int left, int top, int right, int bottom) {
             AccessibilityNodeInfo info = AccessibilityNodeInfo.obtain();
             info.setClassName(Button.class.getName());
             info.setPackageName(getContext().getPackageName());
@@ -2542,7 +2641,7 @@ public class NumberPicker extends LinearLayout {
         }
 
         private AccessibilityNodeInfo createAccessibilityNodeInfoForNumberPicker(int left, int top,
-                                                                                 int right, int bottom) {
+                int right, int bottom) {
             AccessibilityNodeInfo info = AccessibilityNodeInfo.obtain();
             info.setClassName(NumberPicker.class.getName());
             info.setPackageName(getContext().getPackageName());

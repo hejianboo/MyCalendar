@@ -1,11 +1,13 @@
 package com.hjbalan.mycalendar.utils;
 
-import android.content.SharedPreferences;
-
 import com.hjbalan.mycalendar.CalendarApplication;
 
+import android.content.SharedPreferences;
+
 public class MyPreferencesManager {
+
     private static final String APP_PREFERENCES = "m15_cal_pre";
+
     private static final String SHOW_CHINESE_CAL = "show_chinese_cal";
 
     private static MyPreferencesManager mManager;

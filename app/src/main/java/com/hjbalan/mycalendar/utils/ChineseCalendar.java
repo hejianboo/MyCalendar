@@ -34,69 +34,95 @@ import java.util.GregorianCalendar;
  * @author 猪头
  */
 public final class ChineseCalendar extends GregorianCalendar {
+
     /**
      * 农历年
      */
     public static final int CHINESE_YEAR = 801;
+
     /**
      * 农历月
      */
     public static final int CHINESE_MONTH = 802;
+
     /**
      * 农历日
      */
     public static final int CHINESE_DATE = 803;
+
     /**
      * 当月的节气对应的公历日(前一个节气)
      */
     public static final int CHINESE_SECTIONAL_TERM = 804;
+
     /**
      * 当月的中气对应的公历日(后一个节气)
      */
     public static final int CHINESE_PRINCIPLE_TERM = 805;
+
     /**
      * 天干
      */
     public static final int CHINESE_HEAVENLY_STEM = 806;
+
     /**
      * 地支
      */
     public static final int CHINESE_EARTHLY_BRANCH = 807;
+
     /**
      * 农历年的属相(生肖)
      */
     public static final int CHINESE_ANIMAL = 808;
+
     /* 中文字符串 */
     public static final String[] chineseWeekNames = {"", "星期日", "星期一", "星期二",
             "星期三", "星期四", "星期五", "星期六"};
+
     public static final String[] chineseMonthNames = {"", "正", "二", "三", "四",
             "五", "六", "七", "八", "九", "十", "冬", "腊"};
+
     public static final String[] chineseDateNames = {"", "初一", "初二", "初三",
             "初四", "初五", "初六", "初七", "初八", "初九", "初十", "十一", "十二", "十三", "十四",
             "十五", "十六", "十七", "十八", "十九", "二十", "廿一", "廿二", "廿三", "廿四", "廿五",
             "廿六", "廿七", "廿八", "廿九", "三十"};
+
     private static final long serialVersionUID = 8L;
+
     /* 日历第一天的日期 */
     private static final int baseYear = 1901;
+
     private static final int baseMonth = 1;
+
     private static final int baseDate = 1;
+
     private static final int baseIndex = 0;
+
     private static final int baseChineseYear = 1900;
+
     private static final int baseChineseMonth = 11;
+
     private static final int baseChineseDate = 11;
+
     private static final String[] principleTermNames = {"大寒", "雨水", "春分",
             "谷雨", "夏满", "夏至", "大暑", "处暑", "秋分", "霜降", "小雪", "冬至"};
+
     private static final String[] sectionalTermNames = {"小寒", "立春", "惊蛰",
             "清明", "立夏", "芒种", "小暑", "立秋", "白露", "寒露", "立冬", "大雪"};
+
     private static final String[] stemNames = {"", "甲", "乙", "丙", "丁", "戊",
             "己", "庚", "辛", "壬", "癸"};
+
     private static final String[] branchNames = {"", "子", "丑", "寅", "卯", "辰",
             "巳", "午", "未", "申", "酉", "戌", "亥"};
+
     private static final String[] animalNames = {"", "鼠", "牛", "虎", "兔", "龙",
             "蛇", "马", "羊", "猴", "鸡", "狗", "猪"};
+
     // 接下来是数据表
     private static final int[] bigLeapMonthYears = {6, 14, 19, 25, 33, 36, 38,
             41, 44, 52, 55, 79, 117, 136, 147, 150, 155, 158, 185, 193};
+
     private static final char[][] sectionalTermMap = {
             {7, 6, 6, 6, 6, 6, 6, 6, 6, 5, 6, 6, 6, 5, 5, 6, 6, 5, 5, 5, 5, 5,
                     5, 5, 5, 4, 5, 5},
@@ -122,6 +148,7 @@ public final class ChineseCalendar extends GregorianCalendar {
                     7, 7, 6, 6, 7, 7, 7},
             {7, 8, 8, 8, 7, 7, 8, 8, 7, 7, 7, 8, 7, 7, 7, 7, 6, 7, 7, 7, 6, 6,
                     7, 7, 6, 6, 6, 7, 7}};
+
     private static final char[][] sectionalTermYear = {
             {13, 49, 85, 117, 149, 185, 201, 250, 250},
             {13, 45, 81, 117, 149, 185, 201, 250, 250},
@@ -135,6 +162,7 @@ public final class ChineseCalendar extends GregorianCalendar {
             {16, 44, 76, 108, 144, 172, 200, 201, 250},
             {28, 60, 92, 124, 160, 192, 200, 201, 250},
             {17, 53, 85, 124, 156, 188, 200, 201, 250}};
+
     private static final char[][] principleTermMap = {
             {21, 21, 21, 21, 21, 20, 21, 21, 21, 20, 20, 21, 21, 20, 20, 20,
                     20, 20, 20, 20, 20, 19, 20, 20, 20, 19, 19, 20},
@@ -160,6 +188,7 @@ public final class ChineseCalendar extends GregorianCalendar {
                     22, 22, 22, 22, 21, 22, 22, 22, 21, 21, 22, 22, 22},
             {22, 22, 23, 23, 22, 22, 22, 23, 22, 22, 22, 22, 21, 22, 22, 22,
                     21, 21, 22, 22, 21, 21, 21, 22, 21, 21, 21, 21, 22}};
+
     private static final char[][] principleTermYear = {
             {13, 45, 81, 113, 149, 185, 201},
             {21, 57, 93, 125, 161, 193, 201},
@@ -173,8 +202,10 @@ public final class ChineseCalendar extends GregorianCalendar {
             {28, 60, 92, 124, 160, 192, 200, 201},
             {16, 44, 80, 112, 148, 180, 200, 201},
             {17, 53, 88, 120, 156, 188, 200, 201}};
+
     private static final char[] daysInGregorianMonth = {31, 28, 31, 30, 31,
             30, 31, 31, 30, 31, 30, 31};
+
     private static final char[] chineseMonths = {0x00, 0x04, 0xad, 0x08, 0x5a,
             0x01, 0xd5, 0x54, 0xb4, 0x09, 0x64, 0x05, 0x59, 0x45, 0x95, 0x0a,
             0xa6, 0x04, 0x55, 0x24, 0xad, 0x08, 0x5a, 0x62, 0xda, 0x04, 0xb4,
@@ -213,12 +244,19 @@ public final class ChineseCalendar extends GregorianCalendar {
             0x09, 0x68, 0x89, 0x54, 0x0b, 0xa4, 0x0a, 0xa5, 0x6a, 0x95, 0x04,
             0xad, 0x08, 0x6a, 0x44, 0xda, 0x04, 0x74, 0x05, 0xb0, 0x25, 0x54,
             0x03};
+
     private int chineseYear;
+
     private int chineseMonth; // 1起始，负数表示闰月
+
     private int chineseDate;
+
     private int sectionalTerm; // 当月节气的公历日
+
     private int principleTerm; // 当月中气的公历日
+
     private boolean areChineseFieldsComputed; // 农历日期是否已经经过计算确认
+
     private boolean areSolarTermsComputed; // 节气是否已经经过计算确认
 
     // 接下来是静态方法~
@@ -256,9 +294,6 @@ public final class ChineseCalendar extends GregorianCalendar {
      * 使用指定日期构造一个实例。
      *
      * @param isChinese 是否为农历日期
-     * @param y
-     * @param m
-     * @param d
      */
     public ChineseCalendar(boolean isChinese, int y, int m, int d) {
         if (isChinese) {
@@ -272,9 +307,6 @@ public final class ChineseCalendar extends GregorianCalendar {
 
     /**
      * 是否为公历闰年
-     *
-     * @param year
-     * @return
      */
     public static boolean isGregorianLeapYear(int year) {
         boolean isLeap = false;
@@ -292,10 +324,6 @@ public final class ChineseCalendar extends GregorianCalendar {
 
     /**
      * 计算公历年的当月天数，公历月从0起始！
-     *
-     * @param y
-     * @param m
-     * @return
      */
     public static int daysInGregorianMonth(int y, int m) {
         int d = daysInGregorianMonth[m];
@@ -307,10 +335,6 @@ public final class ChineseCalendar extends GregorianCalendar {
 
     /**
      * 计算公历年当月的节气，公历月从0起始！
-     *
-     * @param y
-     * @param m
-     * @return
      */
     public static int sectionalTerm(int y, int m) {
         m++;
@@ -337,10 +361,6 @@ public final class ChineseCalendar extends GregorianCalendar {
 
     /**
      * 计算公历年当月的中气，公历月从0起始！
-     *
-     * @param y
-     * @param m
-     * @return
      */
     public static int principleTerm(int y, int m) {
         m++;
@@ -364,10 +384,6 @@ public final class ChineseCalendar extends GregorianCalendar {
 
     /**
      * 计算农历年的天数
-     *
-     * @param y
-     * @param m
-     * @return
      */
     public static int daysInChineseMonth(int y, int m) {
         // 注意：闰月 m < 0
@@ -407,10 +423,6 @@ public final class ChineseCalendar extends GregorianCalendar {
 
     /**
      * 计算农历的下个月
-     *
-     * @param y
-     * @param m
-     * @return
      */
     public static int nextChineseMonth(int y, int m) {
         int n = Math.abs(m) + 1;
@@ -565,9 +577,6 @@ public final class ChineseCalendar extends GregorianCalendar {
 
     /**
      * 获得属性的中文，可以使用的属性字段为DAY_OF_WEEK以及所有农历属性字段。
-     *
-     * @param field
-     * @return
      */
     public String getChinese(int field) {
         if (!areChineseFieldsComputed) {
@@ -580,10 +589,11 @@ public final class ChineseCalendar extends GregorianCalendar {
                 return getChinese(CHINESE_HEAVENLY_STEM)
                         + getChinese(CHINESE_EARTHLY_BRANCH);
             case CHINESE_MONTH:
-                if (chineseMonth > 0)
+                if (chineseMonth > 0) {
                     return chineseMonthNames[chineseMonth];
-                else
+                } else {
                     return "闰" + chineseMonthNames[-chineseMonth];
+                }
             case CHINESE_DATE:
                 return chineseDateNames[chineseDate];
             case CHINESE_SECTIONAL_TERM:
@@ -657,9 +667,6 @@ public final class ChineseCalendar extends GregorianCalendar {
 
     /**
      * 判断是不是农历属性
-     *
-     * @param field
-     * @return
      */
     private boolean isChineseField(int field) {
         switch (field) {
@@ -681,8 +688,6 @@ public final class ChineseCalendar extends GregorianCalendar {
      * 如果上一次设置的与这次将要设置或获取的属性不是同一类（农历/公历），<br>
      * 例如上一次设置的是农历而现在要设置或获取公历，<br>
      * 则需要先根据之前设置的农历日期计算出公历日期。
-     *
-     * @param field
      */
     private void computeIfNeed(int field) {
         if (isChineseField(field)) {
@@ -715,18 +720,21 @@ public final class ChineseCalendar extends GregorianCalendar {
         areFieldsSet = true;
         lastSetChinese = false;
         // 调整日期范围
-        if (y < 1900)
+        if (y < 1900) {
             y = 1899;
-        else if (y > 2100)
+        } else if (y > 2100) {
             y = 2101;
-        if (m < -12)
+        }
+        if (m < -12) {
             m = -12;
-        else if (m > 12)
+        } else if (m > 12) {
             m = 12;
-        if (d < 1)
+        }
+        if (d < 1) {
             d = 1;
-        else if (d > 30)
+        } else if (d > 30) {
             d = 30;
+        }
         int dateint = y * 10000 + Math.abs(m) * 100 + d;
         if (dateint < 19001111) { // 太小
             set(1901, Calendar.JANUARY, 1);

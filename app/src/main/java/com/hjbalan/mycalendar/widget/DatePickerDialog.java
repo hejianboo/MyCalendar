@@ -16,6 +16,8 @@
 
 package com.hjbalan.mycalendar.widget;
 
+import com.hjbalan.mycalendar.R;
+
 import android.app.AlertDialog;
 import android.content.Context;
 import android.content.DialogInterface;
@@ -25,8 +27,6 @@ import android.os.Bundle;
 import android.text.format.DateUtils;
 import android.view.LayoutInflater;
 import android.view.View;
-
-import com.hjbalan.mycalendar.R;
 
 import java.util.Calendar;
 
@@ -40,11 +40,15 @@ public class DatePickerDialog extends AlertDialog implements OnClickListener,
         DatePicker.OnDateChangedListener {
 
     private static final String YEAR = "year";
+
     private static final String MONTH = "month";
+
     private static final String DAY = "day";
 
     private final DatePicker mDatePicker;
+
     private final OnDateSetListener mCallBack;
+
     private final Calendar mCalendar;
 
     private boolean mTitleNeedsUpdate = true;
@@ -57,11 +61,13 @@ public class DatePickerDialog extends AlertDialog implements OnClickListener,
      * @param dayOfMonth  The initial day of the dialog.
      */
     public DatePickerDialog(Context context,
-                            OnDateSetListener callBack,
-                            int year,
-                            int monthOfYear,
-                            int dayOfMonth) {
-        this(context, Build.VERSION.SDK_INT < Build.VERSION_CODES.HONEYCOMB ? R.style.Theme_Dialog_Alert : 0, callBack, year, monthOfYear, dayOfMonth);
+            OnDateSetListener callBack,
+            int year,
+            int monthOfYear,
+            int dayOfMonth) {
+        this(context,
+                Build.VERSION.SDK_INT < Build.VERSION_CODES.HONEYCOMB ? R.style.Theme_Dialog_Alert
+                        : 0, callBack, year, monthOfYear, dayOfMonth);
     }
 
     /**
@@ -73,11 +79,11 @@ public class DatePickerDialog extends AlertDialog implements OnClickListener,
      * @param dayOfMonth  The initial day of the dialog.
      */
     public DatePickerDialog(Context context,
-                            int theme,
-                            OnDateSetListener callBack,
-                            int year,
-                            int monthOfYear,
-                            int dayOfMonth) {
+            int theme,
+            OnDateSetListener callBack,
+            int year,
+            int monthOfYear,
+            int dayOfMonth) {
         super(context, theme);
 
         mCallBack = callBack;
@@ -102,7 +108,7 @@ public class DatePickerDialog extends AlertDialog implements OnClickListener,
     }
 
     public void onDateChanged(DatePicker view, int year,
-                              int month, int day) {
+            int month, int day) {
         mDatePicker.init(year, month, day, this);
         updateTitle(year, month, day);
     }

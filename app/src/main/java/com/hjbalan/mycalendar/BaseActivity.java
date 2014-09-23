@@ -1,9 +1,9 @@
 package com.hjbalan.mycalendar;
 
+import com.hjbalan.mycalendar.utils.AsyncQueryService;
+
 import android.app.Activity;
 import android.view.MenuItem;
-
-import com.hjbalan.mycalendar.utils.AsyncQueryService;
 
 public class BaseActivity extends Activity {
 

@@ -1,6 +1,8 @@
 package com.hjbalan.mycalendar.utils;
 
 
+import com.hjbalan.mycalendar.utils.AsyncQueryServiceHelper.OperationInfo;
+
 import android.content.ContentProviderOperation;
 import android.content.ContentProviderResult;
 import android.content.ContentValues;
@@ -10,8 +12,6 @@ import android.net.Uri;
 import android.os.Handler;
 import android.os.Message;
 import android.util.Log;
-
-import com.hjbalan.mycalendar.utils.AsyncQueryServiceHelper.OperationInfo;
 
 import java.util.ArrayList;
 import java.util.concurrent.atomic.AtomicInteger;
@@ -29,12 +29,16 @@ import java.util.concurrent.atomic.AtomicInteger;
  * application which serializes all the calls.
  */
 public class AsyncQueryService extends Handler {
+
     static final boolean localLOGV = false;
+
     private static final String TAG = "AsyncQuery";
+
     // Used for generating unique tokens for calls to this service
     private static AtomicInteger mUniqueToken = new AtomicInteger(0);
 
     private Context mContext;
+
     private Handler mHandler = this; // can be overridden for testing
 
     public AsyncQueryService(Context context) {
@@ -95,7 +99,7 @@ public class AsyncQueryService extends Handler {
      *                      default sort order, which may be unordered.
      */
     public void startQuery(int token, Object cookie, Uri uri, String[] projection,
-                           String selection, String[] selectionArgs, String orderBy) {
+            String selection, String[] selectionArgs, String orderBy) {
         OperationInfo info = new OperationInfo();
         info.op = Operation.EVENT_ARG_QUERY;
         info.resolver = mContext.getContentResolver();
@@ -127,7 +131,7 @@ public class AsyncQueryService extends Handler {
      *                      added. Useful for implementing single level undo.
      */
     public void startInsert(int token, Object cookie, Uri uri, ContentValues initialValues,
-                            long delayMillis) {
+            long delayMillis) {
         OperationInfo info = new OperationInfo();
         info.op = Operation.EVENT_ARG_INSERT;
         info.resolver = mContext.getContentResolver();
@@ -163,7 +167,7 @@ public class AsyncQueryService extends Handler {
      *                      added. Useful for implementing single level undo.
      */
     public void startUpdate(int token, Object cookie, Uri uri, ContentValues values,
-                            String selection, String[] selectionArgs, long delayMillis) {
+            String selection, String[] selectionArgs, long delayMillis) {
         OperationInfo info = new OperationInfo();
         info.op = Operation.EVENT_ARG_UPDATE;
         info.resolver = mContext.getContentResolver();
@@ -200,7 +204,7 @@ public class AsyncQueryService extends Handler {
      *                      added. Useful for implementing single level undo.
      */
     public void startDelete(int token, Object cookie, Uri uri, String selection,
-                            String[] selectionArgs, long delayMillis) {
+            String[] selectionArgs, long delayMillis) {
         OperationInfo info = new OperationInfo();
         info.op = Operation.EVENT_ARG_DELETE;
         info.resolver = mContext.getContentResolver();
@@ -231,7 +235,7 @@ public class AsyncQueryService extends Handler {
      *                    added. Useful for implementing single level undo.
      */
     public void startBatch(int token, Object cookie, String authority,
-                           ArrayList<ContentProviderOperation> cpo, long delayMillis) {
+            ArrayList<ContentProviderOperation> cpo, long delayMillis) {
         OperationInfo info = new OperationInfo();
         info.op = Operation.EVENT_ARG_BATCH;
         info.resolver = mContext.getContentResolver();
@@ -367,10 +371,15 @@ public class AsyncQueryService extends Handler {
      * Data class which holds into info of the queued operation
      */
     public static class Operation {
+
         static final int EVENT_ARG_QUERY = 1;
+
         static final int EVENT_ARG_INSERT = 2;
+
         static final int EVENT_ARG_UPDATE = 3;
+
         static final int EVENT_ARG_DELETE = 4;
+
         static final int EVENT_ARG_BATCH = 5;
 
         /**

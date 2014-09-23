@@ -16,6 +16,8 @@
 
 package com.hjbalan.mycalendar.widget;
 
+import com.hjbalan.mycalendar.R;
+
 import android.app.AlertDialog;
 import android.content.Context;
 import android.content.DialogInterface;
@@ -24,8 +26,6 @@ import android.os.Build;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
-
-import com.hjbalan.mycalendar.R;
 
 /**
  * A dialog that prompts the user for the time of day using a {@link TimePicker}.
@@ -37,12 +37,19 @@ public class TimePickerDialog extends AlertDialog
         implements OnClickListener, TimePicker.OnTimeChangedListener {
 
     private static final String HOUR = "hour";
+
     private static final String MINUTE = "minute";
+
     private static final String IS_24_HOUR = "is24hour";
+
     private final TimePicker mTimePicker;
+
     private final OnTimeSetListener mCallback;
+
     int mInitialHourOfDay;
+
     int mInitialMinute;
+
     boolean mIs24HourView;
 
     /**
@@ -53,9 +60,11 @@ public class TimePickerDialog extends AlertDialog
      * @param is24HourView Whether this is a 24 hour view, or AM/PM.
      */
     public TimePickerDialog(Context context,
-                            OnTimeSetListener callBack,
-                            int hourOfDay, int minute, boolean is24HourView) {
-        this(context, Build.VERSION.SDK_INT < Build.VERSION_CODES.HONEYCOMB ? R.style.Theme_Dialog_Alert : 0, callBack, hourOfDay, minute, is24HourView);
+            OnTimeSetListener callBack,
+            int hourOfDay, int minute, boolean is24HourView) {
+        this(context,
+                Build.VERSION.SDK_INT < Build.VERSION_CODES.HONEYCOMB ? R.style.Theme_Dialog_Alert
+                        : 0, callBack, hourOfDay, minute, is24HourView);
     }
 
     /**
@@ -67,9 +76,9 @@ public class TimePickerDialog extends AlertDialog
      * @param is24HourView Whether this is a 24 hour view, or AM/PM.
      */
     public TimePickerDialog(Context context,
-                            int theme,
-                            OnTimeSetListener callBack,
-                            int hourOfDay, int minute, boolean is24HourView) {
+            int theme,
+            OnTimeSetListener callBack,
+            int hourOfDay, int minute, boolean is24HourView) {
         super(context, theme);
         mCallback = callBack;
         mInitialHourOfDay = hourOfDay;
