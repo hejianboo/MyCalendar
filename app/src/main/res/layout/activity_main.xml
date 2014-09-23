@@ -1,0 +1,44 @@
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    tools:context=".MainActivity">
+
+    <com.hjbalan.mycalendar.widget.CalendarView
+        android:id="@+id/cv"
+        style="@style/Widget.CalendarView"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="1" />
+
+    <FrameLayout
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="1">
+
+        <se.emilsjolander.stickylistheaders.StickyListHeadersListView
+            android:id="@+id/lv_events"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:clipToPadding="false"
+            android:drawSelectorOnTop="true"
+            android:fastScrollEnabled="true"
+            android:overScrollMode="never"
+            android:scrollbarStyle="outsideOverlay" />
+
+        <Button
+            android:id="@+id/btn_new_event"
+            android:layout_width="48dp"
+            android:layout_height="48dp"
+            android:layout_gravity="end|bottom"
+            android:layout_margin="16dp"
+            android:background="@drawable/bg_floatingactions"
+            android:gravity="center"
+            android:text="@string/go_back_today"
+            android:textColor="@android:color/white"
+            android:textSize="@dimen/t2"
+            android:visibility="visible" />
+    </FrameLayout>
+
+</LinearLayout>

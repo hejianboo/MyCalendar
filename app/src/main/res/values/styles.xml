@@ -1,0 +1,158 @@
+<resources>
+
+    <!-- Base application theme. -->
+    <style name="AppTheme" parent="android:Theme.Holo.Light.DarkActionBar">
+        <item name="android:actionBarStyle">@style/ActionBarStyle</item>
+        <item name="android:actionBarDivider">@android:color/transparent</item>
+        <item name="android:homeAsUpIndicator">@drawable/ic_actionbar_back</item>
+        <item name="android:actionBarItemBackground">@drawable/bg_actionbar_item_selector</item>
+        <item name="android:actionMenuTextColor">@color/c1</item>
+        <item name="android:actionMenuTextAppearance">@style/ActionBar.MenuTextStyle</item>
+        <item name="android:windowBackground">@android:color/white</item>
+    </style>
+
+    <style name="ActionBarStyle" parent="android:Widget.Holo.Light.ActionBar">
+        <item name="android:displayOptions">homeAsUp|showHome|showTitle</item>
+        <item name="android:background">@color/c5</item>
+        <item name="android:titleTextStyle">@style/ActionBar.TitleTextStyle</item>
+        <item name="android:height">@dimen/actionbar_height</item>
+        <item name="android:icon">@android:color/transparent</item>
+        <item name="android:logo">@android:color/transparent</item>
+    </style>
+
+    <style name="ActionBar.TitleTextStyle" parent="android:TextAppearance.Holo.Widget.ActionBar.Title">
+        <item name="android:textColor">@color/c1</item>
+        <item name="android:textSize">@dimen/t3</item>
+        <item name="android:text">@string/app_name</item>
+    </style>
+
+    <style name="ActionBar.MenuTextStyle" parent="android:TextAppearance.Holo.Widget.ActionBar.Menu">
+        <item name="android:textStyle">normal</item>
+        <item name="android:textSize">@dimen/t4</item>
+    </style>
+
+    <style name="MainActivityStyle" parent="AppTheme">
+        <item name="android:actionBarStyle">@style/MainActivityActionBarStyle</item>
+        <item name="android:windowContentOverlay">@android:color/transparent</item>
+    </style>
+
+    <style name="MainActivityActionBarStyle" parent="ActionBarStyle">
+        <item name="android:displayOptions">showCustom</item>
+    </style>
+
+    <style name="Widget.CalendarView">
+        <item name="cv_showWeekNumber">false</item>
+        <item name="cv_showChineseDate">@bool/show_chinese</item>
+        <item name="cv_firstDayOfWeek">1</item>
+        <item name="cv_minDate">01/01/1901</item>
+        <item name="cv_maxDate">12/31/2100</item>
+        <item name="cv_shownWeekCount">5</item>
+        <item name="cv_selectedWeekBackgroundColor">@android:color/transparent</item>
+        <item name="cv_focusedMonthDateColor">@color/c1</item>
+        <item name="cv_unfocusedMonthDateColor">@color/c2</item>
+        <item name="cv_weekNumberColor">@android:color/transparent</item>
+        <item name="cv_weekSeparatorLineColor">@android:color/transparent</item>
+        <item name="cv_selectedDateBackgroundColor">@color/c6</item>
+        <item name="cv_selectedDateVerticalBar">@drawable/day_picker_week_view_dayline_holo</item>
+        <item name="cv_weekDayTextAppearance">@style/TextAppearance.Small.CalendarViewWeekDayView
+        </item>
+        <item name="cv_dateTextAppearance">@style/TextAppearance.Small.DateText</item>
+        <item name="cv_chineseDateTextAppearance">@style/TextAppearance.Small.ChineseDateText</item>
+    </style>
+
+    <style name="TextAppearance.Small.CalendarViewWeekDayView" parent="@android:style/TextAppearance.Small">
+        <item name="android:textStyle">normal</item>
+        <item name="android:textColor">@color/c1</item>
+        <item name="android:textSize">@dimen/t4</item>
+    </style>
+
+    <style name="TextAppearance.Small.DateText" parent="@android:style/TextAppearance.Small">
+        <item name="android:textStyle">normal</item>
+        <item name="android:textSize">@dimen/t2</item>
+    </style>
+
+    <style name="TextAppearance.Small.ChineseDateText" parent="@android:style/TextAppearance.Small">
+        <item name="android:textSize">@dimen/t5</item>
+        <item name="android:textColor">@color/c2</item>
+    </style>
+
+    <!-- the date picker style -->
+    <style name="Theme.Dialog.Alert" parent="@android:style/Theme.Dialog">
+        <item name="android:windowBackground">@android:color/transparent</item>
+        <!--item name="android:windowTitleStyle">@android:style/DialogWindowTitle</item-->
+        <item name="android:windowIsFloating">true</item>
+        <item name="android:windowContentOverlay">@null</item>
+    </style>
+
+    <style name="Widget">
+        <item name="android:textAppearance">?android:attr/textAppearance</item>
+    </style>
+
+    <style name="Widget.DatePicker">
+        <!--item name="android:layout">@android:layout/date_picker</item-->
+        <item name="dp_calendarViewShown">false</item>
+    </style>
+
+    <style name="Widget.Holo.DatePicker" parent="Widget.DatePicker">
+        <item name="dp_internalLayout">@layout/date_picker_holo</item>
+        <item name="dp_calendarViewShown">true</item>
+    </style>
+
+    <style name="Widget.Holo.Light.DatePicker" parent="Widget.Holo.DatePicker">
+        <item name="dp_spinnersShown">true</item>
+        <item name="dp_calendarViewShown">false</item>
+        <item name="dp_minDate">@string/date_min</item>
+        <item name="dp_maxDate">@string/date_max</item>
+    </style>
+
+    <!-- Don't touch this -->
+    <attr name="numberPickerStyle" format="reference" />
+
+    <declare-styleable name="NumberPicker">
+        <!-- @hide Color for the solid color background if such for optimized rendering. -->
+        <attr name="solidColor" format="color|reference" />
+        <!-- @hide The divider for making the selection area. -->
+        <attr name="selectionDivider" format="reference" />
+        <!-- @hide The height of the selection divider. -->
+        <attr name="selectionDividerHeight" format="dimension" />
+        <!-- @hide The distance between the two selection dividers. -->
+        <attr name="selectionDividersDistance" format="dimension" />
+        <!-- @hide The min height of the NumberPicker. -->
+        <attr name="internalMinHeight" format="dimension" />
+        <!-- @hide The max height of the NumberPicker. -->
+        <attr name="internalMaxHeight" format="dimension" />
+        <!-- @hide The min width of the NumberPicker. -->
+        <attr name="internalMinWidth" format="dimension" />
+        <!-- @hide The max width of the NumberPicker. -->
+        <attr name="internalMaxWidth" format="dimension" />
+        <!-- @hide The layout of the number picker. -->
+        <attr name="internalLayout" format="reference" />
+        <!-- @hide The drawable for pressed virtual (increment/decrement) buttons. -->
+        <attr name="virtualButtonPressedDrawable" format="reference" />
+    </declare-styleable>
+
+    <style name="NPWidget">
+        <item name="android:textAppearance">?android:attr/textAppearance</item>
+    </style>
+
+    <style name="NPWidget.NumberPicker">
+        <item name="android:orientation">vertical</item>
+        <item name="android:fadingEdge">vertical</item>
+        <item name="android:fadingEdgeLength">50dip</item>
+    </style>
+
+    <style name="NPWidget.Holo.NumberPicker" parent="NPWidget.NumberPicker">
+        <item name="solidColor">@android:color/transparent</item>
+        <item name="selectionDivider">@color/c6</item>
+        <item name="selectionDividerHeight">2dip</item>
+        <item name="internalLayout">@layout/number_picker_with_selector_wheel</item>
+        <item name="internalMinWidth">64dip</item>
+        <item name="internalMaxHeight">180dip</item>
+        <item name="virtualButtonPressedDrawable">@drawable/item_background_holo_dark</item>
+    </style>
+
+    <style name="NPWidget.Holo.Light.NumberPicker" parent="NPWidget.Holo.NumberPicker">
+        <item name="virtualButtonPressedDrawable">@drawable/item_background_holo_light</item>
+    </style>
+
+</resources>

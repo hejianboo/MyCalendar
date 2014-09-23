@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="nothing"></string>
+    <string name="app_name">日历</string>
+
+    <string name="date_min">01/01/1901</string>
+    <string name="date_max">12/31/2099</string>
+
+    <string name="action_add">添加</string>
+    <string name="action_settings">设置</string>
+    <string name="action_edit">编辑</string>
+    <string name="action_finish">完成</string>
+
+    <string name="activity_new_event">新建提醒</string>
+    <string name="activity_edit_event">编辑提醒</string>
+    <string name="activity_event_info">提醒</string>
+
+    <string name="ok">确  定</string>
+    <string name="cancel">取  消</string>
+    <string name="delete">删  除</string>
+
+    <string name="days_remain">还有%1$d天</string>
+    <string name="days_passed">%1$d天前</string>
+    <string name="year">年</string>
+    <string name="month">月</string>
+    <string name="today">今天</string>
+    <string name="tomorrow">明天</string>
+    <string name="day_after_tomorrow">后天</string>
+    <string name="yestoday">昨天</string>
+    <string name="format_full_date">%1$d年%2$d月%3$d日</string>
+    <string name="format_simple_date">%1$d月%2$d日</string>
+    <string name="date_gregorian">公历</string>
+    <string name="date_chinese">农历</string>
+
+    <string name="go_back_today">今</string>
+
+    <string name="no_event">没有事件</string>
+    <string name="edit_event_from">自</string>
+    <string name="edit_event_to">至</string>
+    <string name="all_day">全天事件</string>
+
+    <string name="format_date_parttern">yyyy年MM月dd日</string>
+    <string name="format_time_parttern">a hh:mm</string>
+
+</resources>
