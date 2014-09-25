@@ -14,10 +14,12 @@
  * limitations under the License.
  */
 
-package com.hjbalan.mycalendar.widget;
+package com.hjbalan.mycalendar.ui.widget;
 
 import com.hjbalan.mycalendar.R;
 import com.hjbalan.mycalendar.utils.ChineseCalendar;
+
+import org.joda.time.DateTimeUtils;
 
 import android.app.Service;
 import android.content.Context;
@@ -776,6 +778,18 @@ public class CalendarView extends FrameLayout {
         }
     }
 
+    public boolean isDateBeforeMinDate(final long millis) {
+        final int minDay = (int) Math.ceil(DateTimeUtils.toJulianDay(getMinDate()));
+        int julianDay = (int) Math.ceil(DateTimeUtils.toJulianDay(millis));
+        return julianDay <= minDay;
+    }
+
+    public boolean isDateAfterMaxDate(final long millis) {
+        final int maxDay = (int) Math.ceil(DateTimeUtils.toJulianDay(getMaxDate()));
+        int julianDay = (int) Math.ceil(DateTimeUtils.toJulianDay(millis));
+        return julianDay >= maxDay;
+    }
+
     @Override
     public boolean isEnabled() {
         return mListView.isEnabled();
@@ -805,7 +819,7 @@ public class CalendarView extends FrameLayout {
     }
 
     /**
-     * Gets the minimal date supported by this {@link com.hjbalan.mycalendar.widget.CalendarView}
+     * Gets the minimal date supported by this {@link CalendarView}
      * in
      * milliseconds since January 1, 1970 00:00:00 in
      * {@link java.util.TimeZone#getDefault()} time zone.
@@ -821,7 +835,7 @@ public class CalendarView extends FrameLayout {
     }
 
     /**
-     * Sets the minimal date supported by this {@link com.hjbalan.mycalendar.widget.CalendarView}
+     * Sets the minimal date supported by this {@link CalendarView}
      * in
      * milliseconds since January 1, 1970 00:00:00 in
      * {@link java.util.TimeZone#getDefault()} time zone.
@@ -858,7 +872,7 @@ public class CalendarView extends FrameLayout {
     }
 
     /**
-     * Gets the maximal date supported by this {@link com.hjbalan.mycalendar.widget.CalendarView}
+     * Gets the maximal date supported by this {@link CalendarView}
      * in
      * milliseconds since January 1, 1970 00:00:00 in
      * {@link java.util.TimeZone#getDefault()} time zone.
@@ -874,7 +888,7 @@ public class CalendarView extends FrameLayout {
     }
 
     /**
-     * Sets the maximal date supported by this {@link com.hjbalan.mycalendar.widget.CalendarView}
+     * Sets the maximal date supported by this {@link CalendarView}
      * in
      * milliseconds since January 1, 1970 00:00:00 in
      * {@link java.util.TimeZone#getDefault()} time zone.
@@ -956,7 +970,7 @@ public class CalendarView extends FrameLayout {
     /**
      * Gets the first day of week.
      *
-     * @return The first day of the week conforming to the {@link com.hjbalan.mycalendar.widget.CalendarView}
+     * @return The first day of the week conforming to the {@link CalendarView}
      * APIs.
      * @attr ref android.R.styleable#CalendarView_firstDayOfWeek
      * @see java.util.Calendar#MONDAY
@@ -975,7 +989,7 @@ public class CalendarView extends FrameLayout {
      * Sets the first day of week.
      *
      * @param firstDayOfWeek The first day of the week conforming to the
-     *                       {@link com.hjbalan.mycalendar.widget.CalendarView} APIs.
+     *                       {@link CalendarView} APIs.
      * @attr ref android.R.styleable#CalendarView_firstDayOfWeek
      * @see java.util.Calendar#MONDAY
      * @see java.util.Calendar#TUESDAY
@@ -1718,7 +1732,7 @@ public class CalendarView extends FrameLayout {
      * This is a dynamic view for drawing a single week. It can be configured to
      * display the week number, start the week on a given day, or show a reduced
      * number of days. It is intended for use as a single view within a
-     * ListView. See {@link com.hjbalan.mycalendar.widget.CalendarView.WeeksAdapter} for usage.
+     * ListView. See {@link CalendarView.WeeksAdapter} for usage.
      * </p>
      */
     private class WeekView extends View {
@@ -1794,7 +1808,7 @@ public class CalendarView extends FrameLayout {
          *
          * @param weekNumber      The number of the week this view represents. The week
          *                        number is a zero based index of the weeks since
-         *                        {@link com.hjbalan.mycalendar.widget.CalendarView#getMinDate()}.
+         *                        {@link CalendarView#getMinDate()}.
          * @param selectedWeekDay The selected day of the week from 0 to 6, -1 if no
          *                        selected day.
          * @param focusedMonth    The month that is currently in focus i.e. highlighted.

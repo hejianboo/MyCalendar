@@ -37,7 +37,7 @@
         android:orientation="horizontal">
 
         <!-- Month -->
-        <com.hjbalan.mycalendar.widget.NumberPicker
+        <com.hjbalan.mycalendar.ui.widget.NumberPicker
             android:id="@+id/month"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
@@ -47,7 +47,7 @@
             android:focusableInTouchMode="true" />
 
         <!-- Day -->
-        <com.hjbalan.mycalendar.widget.NumberPicker
+        <com.hjbalan.mycalendar.ui.widget.NumberPicker
             android:id="@+id/day"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
@@ -57,7 +57,7 @@
             android:focusableInTouchMode="true" />
 
         <!-- Year -->
-        <com.hjbalan.mycalendar.widget.NumberPicker
+        <com.hjbalan.mycalendar.ui.widget.NumberPicker
             android:id="@+id/year"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
@@ -69,7 +69,7 @@
     </LinearLayout>
 
     <!-- calendar view -->
-    <com.hjbalan.mycalendar.widget.CalendarView
+    <com.hjbalan.mycalendar.ui.widget.CalendarView
         android:id="@+id/calendar_view"
         android:layout_width="245dip"
         android:layout_height="280dip"

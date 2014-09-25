@@ -20,7 +20,7 @@
 
     <view
         android:id="@+id/np__numberpicker_input"
-        class="com.hjbalan.mycalendar.widget.NumberPicker$CustomEditText"
+        class="com.hjbalan.mycalendar.ui.widget.NumberPicker$CustomEditText"
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
         android:background="@null"

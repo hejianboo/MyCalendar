@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package com.hjbalan.mycalendar.widget;
+package com.hjbalan.mycalendar.ui.widget;
 
 import com.hjbalan.mycalendar.R;
 

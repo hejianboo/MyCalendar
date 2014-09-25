@@ -42,4 +42,12 @@
     <string name="format_date_parttern">yyyy年MM月dd日</string>
     <string name="format_time_parttern">a hh:mm</string>
 
+    <string name="settings_account">账户</string>
+    <string name="settings_timezone">时区</string>
+    <string name="settings_timezone_def">系统时区（中国标准时间 GMT+8）</string>
+    <string name="settings_show_weather">显示天气</string>
+    <string name="settings_show_chinese_calendar">显示农历</string>
+    <string name="settings_alert">提醒设置</string>
+    <string name="settings_feedback">意见反馈</string>
+
 </resources>

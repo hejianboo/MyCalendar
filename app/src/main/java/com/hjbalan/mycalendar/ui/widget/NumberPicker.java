@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package com.hjbalan.mycalendar.widget;
+package com.hjbalan.mycalendar.ui.widget;
 
 import com.hjbalan.mycalendar.R;
 
@@ -1191,8 +1191,8 @@ public class NumberPicker extends LinearLayout {
 
     /**
      * Sets whether the selector wheel shown during flinging/scrolling should
-     * wrap around the {@link com.hjbalan.mycalendar.widget.NumberPicker#getMinValue()} and
-     * {@link com.hjbalan.mycalendar.widget.NumberPicker#getMaxValue()} values.
+     * wrap around the {@link NumberPicker#getMinValue()} and
+     * {@link NumberPicker#getMaxValue()} values.
      * <p>
      * By default if the range (max - min) is more than the number of items shown
      * on the selector wheel the selector wheel wrapping is enabled.
@@ -1239,35 +1239,35 @@ public class NumberPicker extends LinearLayout {
     /**
      * Set the current value for the number picker.
      * <p>
-     * If the argument is less than the {@link com.hjbalan.mycalendar.widget.NumberPicker#getMinValue()}
+     * If the argument is less than the {@link NumberPicker#getMinValue()}
      * and
-     * {@link com.hjbalan.mycalendar.widget.NumberPicker#getWrapSelectorWheel()} is
+     * {@link NumberPicker#getWrapSelectorWheel()} is
      * <code>false</code> the
-     * current value is set to the {@link com.hjbalan.mycalendar.widget.NumberPicker#getMinValue()}
+     * current value is set to the {@link NumberPicker#getMinValue()}
      * value.
      * </p>
      * <p>
-     * If the argument is less than the {@link com.hjbalan.mycalendar.widget.NumberPicker#getMinValue()}
+     * If the argument is less than the {@link NumberPicker#getMinValue()}
      * and
-     * {@link com.hjbalan.mycalendar.widget.NumberPicker#getWrapSelectorWheel()} is
+     * {@link NumberPicker#getWrapSelectorWheel()} is
      * <code>true</code> the
-     * current value is set to the {@link com.hjbalan.mycalendar.widget.NumberPicker#getMaxValue()}
+     * current value is set to the {@link NumberPicker#getMaxValue()}
      * value.
      * </p>
      * <p>
-     * If the argument is less than the {@link com.hjbalan.mycalendar.widget.NumberPicker#getMaxValue()}
+     * If the argument is less than the {@link NumberPicker#getMaxValue()}
      * and
-     * {@link com.hjbalan.mycalendar.widget.NumberPicker#getWrapSelectorWheel()} is
+     * {@link NumberPicker#getWrapSelectorWheel()} is
      * <code>false</code> the
-     * current value is set to the {@link com.hjbalan.mycalendar.widget.NumberPicker#getMaxValue()}
+     * current value is set to the {@link NumberPicker#getMaxValue()}
      * value.
      * </p>
      * <p>
-     * If the argument is less than the {@link com.hjbalan.mycalendar.widget.NumberPicker#getMaxValue()}
+     * If the argument is less than the {@link NumberPicker#getMaxValue()}
      * and
-     * {@link com.hjbalan.mycalendar.widget.NumberPicker#getWrapSelectorWheel()} is
+     * {@link NumberPicker#getWrapSelectorWheel()} is
      * <code>true</code> the
-     * current value is set to the {@link com.hjbalan.mycalendar.widget.NumberPicker#getMinValue()}
+     * current value is set to the {@link NumberPicker#getMinValue()}
      * value.
      * </p>
      *
@@ -1884,7 +1884,7 @@ public class NumberPicker extends LinearLayout {
     }
 
     /**
-     * Posts an {@link com.hjbalan.mycalendar.widget.NumberPicker.SetSelectionCommand} from the
+     * Posts an {@link NumberPicker.SetSelectionCommand} from the
      * given <code>selectionStart
      * </code> to <code>selectionEnd</code>.
      */

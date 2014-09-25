@@ -1,4 +1,4 @@
-package com.hjbalan.mycalendar;
+package com.hjbalan.mycalendar.ui;
 
 import com.hjbalan.mycalendar.utils.AsyncQueryService;
 

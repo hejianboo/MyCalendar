@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package com.hjbalan.mycalendar.widget;
+package com.hjbalan.mycalendar.ui.widget;
 
 import android.content.Context;
 import android.hardware.SensorManager;

@@ -3,6 +3,7 @@
 
     <string name="app_name">MyCalendar</string>
     <string name="action_settings">Settings</string>
+    <string name="nothing"></string>
 
     <string name="date_min">01/01/1901</string>
     <string name="date_max">12/31/2099</string>

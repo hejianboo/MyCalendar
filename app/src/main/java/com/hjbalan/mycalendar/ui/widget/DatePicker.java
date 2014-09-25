@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package com.hjbalan.mycalendar.widget;
+package com.hjbalan.mycalendar.ui.widget;
 
 import com.hjbalan.mycalendar.R;
 import com.hjbalan.mycalendar.utils.CVArrays;
@@ -403,7 +403,7 @@ public class DatePicker extends FrameLayout {
     }
 
     /**
-     * Gets the minimal date supported by this {@link com.hjbalan.mycalendar.widget.DatePicker} in
+     * Gets the minimal date supported by this {@link DatePicker} in
      * milliseconds since January 1, 1970 00:00:00 in
      * {@link java.util.TimeZone#getDefault()} time zone.
      * <p>
@@ -417,7 +417,7 @@ public class DatePicker extends FrameLayout {
     // }
 
     /**
-     * Sets the maximal date supported by this {@link com.hjbalan.mycalendar.widget.DatePicker} in
+     * Sets the maximal date supported by this {@link DatePicker} in
      * milliseconds since January 1, 1970 00:00:00 in
      * {@link java.util.TimeZone#getDefault()} time zone.
      *
@@ -443,7 +443,7 @@ public class DatePicker extends FrameLayout {
     }
 
     /**
-     * Gets the maximal date supported by this {@link com.hjbalan.mycalendar.widget.DatePicker} in
+     * Gets the maximal date supported by this {@link DatePicker} in
      * milliseconds since January 1, 1970 00:00:00 in
      * {@link java.util.TimeZone#getDefault()} time zone.
      * <p/>
@@ -994,7 +994,7 @@ public class DatePicker extends FrameLayout {
         private final int mDay;
 
         /**
-         * Constructor called from {@link com.hjbalan.mycalendar.widget.DatePicker#onSaveInstanceState()}
+         * Constructor called from {@link DatePicker#onSaveInstanceState()}
          */
         private SavedState(Parcelable superState, int year, int month, int day) {
             super(superState);

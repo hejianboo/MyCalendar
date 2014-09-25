@@ -9,6 +9,10 @@
         <item name="android:actionMenuTextColor">@color/c1</item>
         <item name="android:actionMenuTextAppearance">@style/ActionBar.MenuTextStyle</item>
         <item name="android:windowBackground">@android:color/white</item>
+        <item name="datePickerStyle">@style/Widget.Holo.Light.DatePicker</item>
+        <item name="numberPickerStyle">@style/NPWidget.Holo.Light.NumberPicker</item>
+        <item name="switchStyle">@style/Widget.Holo.CompoundButton.Switch</item>
+        <item name="switchPreferenceStyle">@style/Preference.SwitchPreference</item>
     </style>
 
     <style name="ActionBarStyle" parent="android:Widget.Holo.Light.ActionBar">

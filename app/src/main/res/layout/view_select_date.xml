@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical">
+
+    <RadioGroup
+        android:id="@+id/rg_date_type"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal">
+
+        <RadioButton
+            android:id="@+id/rb_gregorian"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:button="@drawable/bg_rb_check_selector"
+            android:checked="true"
+            android:padding="16dp"
+            android:text="@string/date_gregorian"
+            android:textColor="@color/c1"
+            android:textSize="@dimen/t2" />
+
+        <RadioButton
+            android:id="@+id/rb_chinese"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:button="@drawable/bg_rb_check_selector"
+            android:padding="16dp"
+            android:text="@string/date_chinese"
+            android:textColor="@color/c1"
+            android:textSize="@dimen/t2" />
+    </RadioGroup>
+
+    <com.hjbalan.mycalendar.ui.widget.DatePicker
+        android:id="@+id/date_picker"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content" />
+
+</LinearLayout>

@@ -5,7 +5,7 @@
     android:orientation="vertical"
     tools:context=".MainActivity">
 
-    <com.hjbalan.mycalendar.widget.CalendarView
+    <com.hjbalan.mycalendar.ui.widget.CalendarView
         android:id="@+id/cv"
         style="@style/Widget.CalendarView"
         android:layout_width="match_parent"
@@ -28,7 +28,7 @@
             android:scrollbarStyle="outsideOverlay" />
 
         <Button
-            android:id="@+id/btn_new_event"
+            android:id="@+id/btn_today"
             android:layout_width="48dp"
             android:layout_height="48dp"
             android:layout_gravity="end|bottom"

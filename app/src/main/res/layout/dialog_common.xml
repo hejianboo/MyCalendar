@@ -1,0 +1,67 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@android:color/white"
+    android:orientation="vertical">
+
+    <TextView
+        android:id="@+id/tv_title"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:gravity="center"
+        android:padding="16dp"
+        android:text="zheshibiaoti" />
+
+    <FrameLayout
+        android:id="@+id/fl_dialog_content"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="1"
+        android:padding="16dp">
+
+        <TextView
+            android:id="@+id/tv_message"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_horizontal"
+            android:text="this is message" />
+    </FrameLayout>
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:padding="16dp">
+
+        <Button
+            android:id="@+id/btn_positive"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentRight="true"
+            android:layout_centerVertical="true"
+            android:background="@drawable/bg_actionbar_item_selector"
+            android:gravity="center"
+            android:minHeight="36dp"
+            android:minWidth="88dp"
+            android:padding="4dp"
+            android:text="ok"
+            android:textColor="@color/c6"
+            android:textSize="@dimen/t2" />
+
+        <Button
+            android:id="@+id/btn_negative"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerVertical="true"
+            android:layout_toLeftOf="@id/btn_positive"
+            android:background="@drawable/bg_actionbar_item_selector"
+            android:gravity="center"
+            android:minHeight="36dp"
+            android:minWidth="88dp"
+            android:padding="4dp"
+            android:text="cancel"
+            android:textColor="@color/c1"
+            android:textSize="@dimen/t2" />
+    </RelativeLayout>
+
+</LinearLayout>

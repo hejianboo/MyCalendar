@@ -6,12 +6,13 @@
     <uses-permission android:name="android.permission.WRITE_CALENDAR" />
 
     <application
+        android:name=".CalendarApplication"
         android:allowBackup="true"
         android:icon="@drawable/ic_launcher"
         android:label="@string/app_name"
         android:theme="@style/AppTheme">
         <activity
-            android:name=".MainActivity"
+            android:name=".ui.MainActivity"
             android:label="@string/app_name"
             android:theme="@style/MainActivityStyle">
             <intent-filter>
@@ -20,6 +21,8 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
+
+        <activity android:name=".ui.SettingActivity" />
     </application>
 
 </manifest>
