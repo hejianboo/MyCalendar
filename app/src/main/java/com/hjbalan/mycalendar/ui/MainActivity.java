@@ -37,8 +37,6 @@ public class MainActivity extends Activity implements CalendarView.OnFocusdMonth
         CalendarView.OnTouchDateListener, StickyListHeadersListView.OnStickyHeaderChangedListener,
         Animation.AnimationListener {
 
-    private static final int REQUEST_REFRESH_CAL = 1;
-
     private static final int REQUEST_ADD_EVENT = 2;
 
     private StickyListHeadersListView mLvEvents;
@@ -100,8 +98,6 @@ public class MainActivity extends Activity implements CalendarView.OnFocusdMonth
         mLvEvents.setOnScrollListener(this);
         setActionBarCustomView();
 
-        MyPreferencesManager.getInstance().saveShowChineseCalendarSetting(
-                mCalendarView.getShowChineseDate());
     }
 
     private void setActionBarCustomView() {
@@ -254,8 +250,7 @@ public class MainActivity extends Activity implements CalendarView.OnFocusdMonth
         // as you specify a parent activity in AndroidManifest.xml.
         int id = item.getItemId();
         if (id == R.id.action_settings) {
-            startActivityForResult(new Intent(this, SettingActivity.class),
-                    REQUEST_REFRESH_CAL);
+            startActivity(new Intent(this, SettingActivity.class));
             return true;
         }
         return super.onOptionsItemSelected(item);
@@ -264,6 +259,11 @@ public class MainActivity extends Activity implements CalendarView.OnFocusdMonth
     @Override
     protected void onResume() {
         super.onResume();
+        boolean isShowChineseCalendar = MyPreferencesManager.getInstance().isShowChineseCalendar();
+        if (mCalendarView.isShowChineseDate() != isShowChineseCalendar) {
+            mCalendarView.setShowChineseDate(isShowChineseCalendar);
+        }
+
         if (mTodayDate == null) {
             mTodayDate = Calendar.getInstance();
             loadEvents(mTodayDate.getTimeInMillis(), mTodayDate.getTimeInMillis());
@@ -294,22 +294,6 @@ public class MainActivity extends Activity implements CalendarView.OnFocusdMonth
             default:
                 break;
         }
-    }
-
-    @Override
-    public void onActivityResult(int requestCode, int resultCode, Intent data) {
-        switch (requestCode) {
-            case REQUEST_REFRESH_CAL:
-                if (resultCode == Activity.RESULT_OK) {
-                    mCalendarView.setShowChineseDate(MyPreferencesManager.getInstance()
-                            .isShowChineseCalendar());
-                }
-                break;
-
-            default:
-                break;
-        }
-        super.onActivityResult(requestCode, resultCode, data);
     }
 
     @Override

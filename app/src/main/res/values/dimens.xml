@@ -3,6 +3,8 @@
     <dimen name="activity_horizontal_margin">16dp</dimen>
     <dimen name="activity_vertical_margin">16dp</dimen>
 
+    <dimen name="item_padding">8dp</dimen>
+
     <dimen name="actionbar_height">56dp</dimen>
 
     <dimen name="t1">36sp</dimen>

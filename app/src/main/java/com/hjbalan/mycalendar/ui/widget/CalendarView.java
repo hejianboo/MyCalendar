@@ -948,7 +948,7 @@ public class CalendarView extends FrameLayout {
      * @return True if showing the Chinese date text.
      * @attr ref android.R.styleable#CalendarView_showChineseDate
      */
-    public boolean getShowChineseDate() {
+    public boolean isShowChineseDate() {
         return mShowChineseDate;
     }
 
@@ -2021,27 +2021,17 @@ public class CalendarView extends FrameLayout {
 
             final float textHeight = mDrawPaint.getTextSize();
 
-            // Log.d("cal", "item view heigth is " + mHeight);
-            // Log.d("cal", "date text size is " + mDateTextSize);
-            // Log.d("cal", "chinese date text size is " +
-            // mChineseDateTextSize);
-            // Log.d("cal", "vertical space heigth is " + verticalSpaceHeight);
-            // Log.d("cal", "week seperatorline heigth is " +
-            // mWeekSeperatorLineWidth);
             final int y = mShowChineseDate ? mHeight / 2
-                    : (int) ((mHeight + textHeight) / 2)
-                            - mWeekSeperatorLineWidth;
-            final int chinese_y = (int) (mHeight + mDateTextVerticalSpaceHeight + mDateTextSize)
-                    / 2;
+                    : (int) ((mHeight + textHeight) / 2) - 2 * mWeekSeperatorLineWidth;
+            final int chinese_y = (mHeight + mDateTextSize) / 2 + mDateTextVerticalSpaceHeight;
 
             final int nDays = mNumCells;
             final int divisor = 2 * nDays;
 
             int selectedX = (mSelectedRight + mSelectedLeft) / 2;
             mTempDate.clear();
-            String selectedDay = getDayFromLocation(selectedX, mTempDate) ? mTempDate
-                    .get(Calendar.DAY_OF_MONTH) + ""
-                    : "";
+            String selectedDay = getDayFromLocation(selectedX, mTempDate) ? mTempDate.get(
+                    Calendar.DAY_OF_MONTH) + "" : "";
             int i = 0;
 
             if (isLayoutRtl()) {
@@ -2170,8 +2160,8 @@ public class CalendarView extends FrameLayout {
 
             mDrawPaint.setColor(mSelectedDateBackgroundColor);
 
-            canvas.drawCircle(mSelectedLeft + (mSelectedRight - mSelectedLeft)
-                    / 2, mHeight / 2, mHeight / 2, mDrawPaint);
+            canvas.drawCircle(mSelectedLeft + (mSelectedRight - mSelectedLeft) / 2, mHeight / 2,
+                    mHeight / 2, mDrawPaint);
         }
 
         @Override

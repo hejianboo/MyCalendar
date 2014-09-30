@@ -5,7 +5,7 @@
         <item name="android:actionBarStyle">@style/ActionBarStyle</item>
         <item name="android:actionBarDivider">@android:color/transparent</item>
         <item name="android:homeAsUpIndicator">@drawable/ic_actionbar_back</item>
-        <item name="android:actionBarItemBackground">@drawable/bg_actionbar_item_selector</item>
+        <item name="android:actionBarItemBackground">@drawable/bg_item_selector</item>
         <item name="android:actionMenuTextColor">@color/c1</item>
         <item name="android:actionMenuTextAppearance">@style/ActionBar.MenuTextStyle</item>
         <item name="android:windowBackground">@android:color/white</item>
