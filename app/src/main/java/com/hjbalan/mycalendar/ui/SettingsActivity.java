@@ -26,7 +26,7 @@ import java.util.Map;
 /**
  * Created by alan on 14-9-25.
  */
-public class SettingActivity extends BaseActivity implements View.OnClickListener,
+public class SettingsActivity extends BaseActivity implements View.OnClickListener,
         LoaderManager.LoaderCallbacks<Cursor> {
 
     public static final String[] EVENT_PROJECTION = new String[]{
@@ -70,7 +70,6 @@ public class SettingActivity extends BaseActivity implements View.OnClickListene
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_setting);
-        setTitle(R.string.action_settings);
 
         mSwitchShowChineseCalendar = (Switch) findViewById(R.id.switch_show_chinese);
         findViewById(R.id.tv_feedback).setOnClickListener(this);

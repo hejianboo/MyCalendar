@@ -11,9 +11,9 @@
     <string name="action_edit">编辑</string>
     <string name="action_finish">完成</string>
 
-    <string name="activity_new_event">新建提醒</string>
-    <string name="activity_edit_event">编辑提醒</string>
-    <string name="activity_event_info">提醒</string>
+    <string name="title_activity_settings">设置</string>
+    <string name="title_activity_edit_event">编辑事件</string>
+    <string name="title_activity_new_event">新建事件</string>
 
     <string name="ok">确  定</string>
     <string name="cancel">取  消</string>
