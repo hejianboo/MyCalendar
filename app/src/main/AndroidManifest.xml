@@ -28,9 +28,6 @@
         <activity
             android:name=".ui.EditEventActivity"
             android:label="@string/title_activity_edit_event" />
-        <activity
-            android:name=".ui.NewEventActivity"
-            android:label="@string/title_activity_new_event"></activity>
     </application>
 
 </manifest>

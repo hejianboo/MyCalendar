@@ -1,12 +1,213 @@
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:fillViewport="true"
     android:paddingBottom="@dimen/activity_vertical_margin"
     android:paddingLeft="@dimen/activity_horizontal_margin"
     android:paddingRight="@dimen/activity_horizontal_margin"
     android:paddingTop="@dimen/activity_vertical_margin"
+    android:scrollbarStyle="outsideOverlay"
     tools:context="com.hjbalan.mycalendar.ui.EditEventActivity">
 
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="vertical">
 
-</RelativeLayout>
+
+        <EditText
+            android:id="@+id/et_title"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:background="@drawable/bg_edittext_selector"
+            android:hint="@string/edit_event_title"
+            android:textColor="@color/c1"
+            android:textColorHint="@color/c2"
+            android:textSize="@dimen/t3" />
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/item_padding"
+            android:orientation="horizontal">
+
+            <CheckBox
+                android:id="@+id/cb_all_day"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:button="@drawable/checkbox_button_selector"
+                android:text="@string/edit_all_day"
+                android:textColor="@color/c1"
+                android:textSize="@dimen/t3" />
+
+            <CheckBox
+                android:id="@+id/cb_chinese_event"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:button="@drawable/checkbox_button_selector"
+                android:text="@string/edit_event_chinese_event"
+                android:textColor="@color/c1"
+                android:textSize="@dimen/t3" />
+        </LinearLayout>
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="@dimen/item_padding"
+            android:layout_marginTop="@dimen/item_padding"
+            android:text="@string/edit_event_from"
+            android:textColor="@color/c2"
+            android:textSize="@dimen/t4" />
+
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:animateLayoutChanges="true"
+            android:orientation="horizontal">
+
+            <Button
+                android:id="@+id/btn_date_from"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="4"
+                android:background="@drawable/bg_btn_select_selector"
+                android:gravity="center_vertical"
+                android:textColor="@color/c1"
+                android:textSize="@dimen/t3" />
+
+            <Button
+                android:id="@+id/btn_time_from"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="2"
+                android:background="@drawable/bg_btn_select_selector"
+                android:gravity="center_vertical"
+                android:textColor="@color/c1"
+                android:textSize="@dimen/t3" />
+
+        </LinearLayout>
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="@dimen/item_padding"
+            android:layout_marginTop="@dimen/item_padding"
+            android:text="@string/edit_event_to"
+            android:textColor="@color/c2"
+            android:textSize="@dimen/t4" />
+
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:animateLayoutChanges="true"
+            android:orientation="horizontal">
+
+            <Button
+                android:id="@+id/btn_date_to"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="4"
+                android:background="@drawable/bg_btn_select_selector"
+                android:gravity="center_vertical"
+                android:textColor="@color/c1"
+                android:textSize="@dimen/t3" />
+
+            <Button
+                android:id="@+id/btn_time_to"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="2"
+                android:background="@drawable/bg_btn_select_selector"
+                android:gravity="center_vertical"
+                android:textColor="@color/c1"
+                android:textSize="@dimen/t3" />
+
+        </LinearLayout>
+
+
+        <EditText
+            android:id="@+id/et_desc"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/item_padding"
+            android:background="@drawable/bg_edittext_selector"
+            android:hint="@string/edit_event_desc"
+            android:textColor="@color/c1"
+            android:textColorHint="@color/c2"
+            android:textSize="@dimen/t3" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="@dimen/item_padding"
+            android:layout_marginTop="@dimen/item_padding"
+            android:text="@string/edit_event_reminder"
+            android:textColor="@color/c2"
+            android:textSize="@dimen/t4" />
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal">
+
+            <Spinner
+                android:id="@+id/sp_reminder"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:background="@drawable/bg_btn_select_selector"
+                android:dropDownSelector="@drawable/bg_item_selector"
+                android:entries="@array/reminder"
+                android:spinnerMode="dropdown"
+                android:textColor="@color/c1"
+                android:textSize="@dimen/t3" />
+
+            <Spinner
+                android:id="@+id/sp_reminder_method"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:background="@drawable/bg_btn_select_selector"
+                android:entries="@array/remind_method"
+                android:spinnerMode="dropdown"
+                android:textColor="@color/c1"
+                android:textSize="@dimen/t3" />
+
+        </LinearLayout>
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="@dimen/item_padding"
+            android:layout_marginTop="@dimen/item_padding"
+            android:text="@string/edit_event_repeat"
+            android:textColor="@color/c2"
+            android:textSize="@dimen/t4" />
+
+        <Spinner
+            android:id="@+id/sp_repeat"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:background="@drawable/bg_btn_select_selector"
+            android:entries="@array/repeat"
+            android:spinnerMode="dropdown"
+            android:textColor="@color/c1"
+            android:textSize="@dimen/t3" />
+
+        <Button
+            android:id="@+id/btn_select_calendar"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/item_padding"
+            android:background="@drawable/bg_btn_select_selector"
+            android:gravity="center_vertical"
+            android:textColor="@color/c1"
+            android:textSize="@dimen/t3" />
+
+    </LinearLayout>
+</ScrollView>

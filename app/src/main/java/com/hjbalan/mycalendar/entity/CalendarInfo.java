@@ -33,7 +33,6 @@ public class CalendarInfo implements Parcelable {
 
     public String accountType;
 
-    public int visible;
 
     public CalendarInfo() {
         id = 0;
@@ -42,7 +41,6 @@ public class CalendarInfo implements Parcelable {
         ownerAccount = "";
         calendarName = "";
         accountType = "";
-        visible = 1;
     }
 
     public CalendarInfo(Parcel in) {
@@ -52,7 +50,6 @@ public class CalendarInfo implements Parcelable {
         ownerAccount = in.readString();
         calendarName = in.readString();
         accountType = in.readString();
-        visible = in.readInt();
     }
 
     @Override
@@ -68,7 +65,6 @@ public class CalendarInfo implements Parcelable {
         dest.writeString(ownerAccount);
         dest.writeString(calendarName);
         dest.writeString(accountType);
-        dest.writeInt(visible);
     }
 
     @Override
@@ -78,7 +74,6 @@ public class CalendarInfo implements Parcelable {
                 "displayName = " + displayName + "\r\n" +
                 "ownerAccount = " + ownerAccount + "\r\n" +
                 "calendarName = " + calendarName + "\r\n" +
-                "accountType = " + accountType + "\r\n" +
-                "visible = " + visible;
+                "accountType = " + accountType + "\r\n";
     }
 }

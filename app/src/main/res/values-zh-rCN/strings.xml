@@ -27,22 +27,18 @@
     <string name="tomorrow">明天</string>
     <string name="day_after_tomorrow">后天</string>
     <string name="yestoday">昨天</string>
-    <string name="format_full_date">%1$d年%2$d月%3$d日</string>
-    <string name="format_simple_date">%1$d月%2$d日</string>
+    <string name="date_full_format">%1$d年%2$d月%3$d日</string>
+    <string name="data_simple_format">%1$d月%2$d日</string>
     <string name="date_gregorian">公历</string>
     <string name="date_chinese">农历</string>
 
     <string name="go_back_today">今</string>
-
     <string name="no_event">没有事件</string>
-    <string name="edit_event_from">自</string>
-    <string name="edit_event_to">至</string>
-    <string name="all_day">全天事件</string>
 
-    <string name="format_date_parttern">yyyy年MM月dd日</string>
-    <string name="format_time_parttern">a hh:mm</string>
+    <string name="format_date_parttern">yyyy年MM月dd日 E - HH:mm</string>
+    <string name="format_date_simple_partten">MM月dd日 E - HH:mm</string>
 
-    <string name="settings_visible_calendar">日历</string>
+    <string name="settings_manage_calendar">管理日历</string>
     <string name="settings_account">账户</string>
     <string name="settings_timezone">时区</string>
     <string name="settings_timezone_def">系统时区（中国标准时间 GMT+8）</string>
@@ -51,5 +47,14 @@
     <string name="settings_alert">提醒设置</string>
     <string name="settings_feedback">意见反馈</string>
     <string name="settings_add_account">添加账户</string>
+
+    <string name="edit_event_title">标题</string>
+    <string name="edit_event_from">从</string>
+    <string name="edit_event_to">到</string>
+    <string name="edit_all_day">全天事件</string>
+    <string name="edit_event_chinese_event">农历事件</string>
+    <string name="edit_event_desc">说明</string>
+    <string name="edit_event_reminder">提醒</string>
+    <string name="edit_event_repeat">重复</string>
 
 </resources>

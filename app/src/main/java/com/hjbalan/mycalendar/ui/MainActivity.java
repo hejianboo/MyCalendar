@@ -37,7 +37,9 @@ public class MainActivity extends Activity implements CalendarView.OnFocusdMonth
         CalendarView.OnTouchDateListener, StickyListHeadersListView.OnStickyHeaderChangedListener,
         Animation.AnimationListener {
 
-    private static final int REQUEST_ADD_EVENT = 2;
+    private static final int REQUEST_ADD_EVENT = 1;
+
+    private static final int REQUEST_EDIT_EVENT = 2;
 
     private StickyListHeadersListView mLvEvents;
 
@@ -253,7 +255,7 @@ public class MainActivity extends Activity implements CalendarView.OnFocusdMonth
             startActivity(new Intent(this, SettingsActivity.class));
             return true;
         } else if (id == R.id.action_add) {
-            startActivity(new Intent(this, NewEventActivity.class));
+            startActivityForResult(new Intent(this, EditEventActivity.class), REQUEST_ADD_EVENT);
             return true;
         }
         return super.onOptionsItemSelected(item);
@@ -395,5 +397,10 @@ public class MainActivity extends Activity implements CalendarView.OnFocusdMonth
     @Override
     public void onAnimationRepeat(Animation animation) {
 
+    }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
     }
 }

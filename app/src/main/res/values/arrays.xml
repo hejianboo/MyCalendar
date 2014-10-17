@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <string-array name="reminder">
+        <item>None</item>
+        <item>At time of event</item>
+        <item>5 minutes before</item>
+        <item>15 minutes before</item>
+        <item>30 minutes before</item>
+        <item>1 hour before</item>
+        <item>2 hours before</item>
+        <item>3 hours before</item>
+        <item>1 day before</item>
+        <item>2 days before</item>
+    </string-array>
+
+    <string-array name="remind_method">
+        <item>Notification</item>
+        <item>Email</item>
+    </string-array>
+
+    <string-array name="repeat">
+        <item>None</item>
+        <item>Every day</item>
+        <item>Every week</item>
+        <item>Every 2 weeks</item>
+        <item>Every month</item>
+        <item>Every year</item>
+    </string-array>
+
+</resources>

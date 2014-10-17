@@ -2,7 +2,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     tools:context="com.hjbalan.mycalendar.ui.EditEventActivity">
     <item
-        android:id="@+id/action_settings"
+        android:id="@+id/action_finish"
         android:icon="@drawable/ic_actionbar_finish"
         android:showAsAction="ifRoom"
         android:title="@string/action_finish" />

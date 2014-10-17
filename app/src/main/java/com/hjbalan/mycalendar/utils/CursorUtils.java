@@ -7,6 +7,10 @@ public class CursorUtils {
 
     public static final long UNDO_DELAY = 0;
 
+    private CursorUtils() {
+
+    }
+
     public static MatrixCursor matrixCursorFromCursor(Cursor cursor) {
         if (cursor == null) {
             return null;

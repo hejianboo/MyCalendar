@@ -98,7 +98,7 @@ public class EventsAdapter extends BaseAdapter implements
             holder.ivImage.setImageResource(R.drawable.ic_list_default);
             holder.tvEvent.setText(event.title);
             if (event.allDay) {
-                holder.tvTime.setText(mInflater.getContext().getString(R.string.all_day));
+                holder.tvTime.setText(mInflater.getContext().getString(R.string.edit_all_day));
             } else {
 
             }
@@ -145,10 +145,10 @@ public class EventsAdapter extends BaseAdapter implements
         String s1 = "";
         String s2 = "";
         if (year == year2) {
-            s1 = mInflater.getContext().getString(R.string.format_simple_date,
+            s1 = mInflater.getContext().getString(R.string.data_simple_format,
                     month2, day2);
         } else {
-            s1 = mInflater.getContext().getString(R.string.format_full_date,
+            s1 = mInflater.getContext().getString(R.string.date_full_format,
                     year2, month2, day2);
         }
         if (diff == 0) {

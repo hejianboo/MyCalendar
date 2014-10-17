@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <string-array name="reminder">
+        <item>不提醒</item>
+        <item>准时</item>
+        <item>5分钟前</item>
+        <item>15分钟前</item>
+        <item>30分钟前</item>
+        <item>1小时前</item>
+        <item>2小时前</item>
+        <item>3小时前</item>
+        <item>1天前</item>
+        <item>2天前</item>
+    </string-array>
+
+    <string-array name="remind_method">
+        <item>通知</item>
+        <item>邮件</item>
+    </string-array>
+
+    <string-array name="repeat">
+        <item>一次性事件</item>
+        <item>每天</item>
+        <item>每周</item>
+        <item>每两周</item>
+        <item>每月</item>
+        <item>每年</item>
+    </string-array>
+
+</resources>
