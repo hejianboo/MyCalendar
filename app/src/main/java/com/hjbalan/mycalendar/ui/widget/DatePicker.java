@@ -170,7 +170,7 @@ public class DatePicker extends FrameLayout {
         String minDate = attributesArray.getString(R.styleable.DatePicker_dp_minDate);
         String maxDate = attributesArray.getString(R.styleable.DatePicker_dp_maxDate);
         int layoutResourceId = attributesArray.getResourceId(
-                R.styleable.DatePicker_dp_internalLayout, R.layout.date_picker_holo);
+                R.styleable.DatePicker_dp_internalLayout, R.layout.date_picker_holo_custom);
         attributesArray.recycle();
 
         LayoutInflater inflater = (LayoutInflater) context

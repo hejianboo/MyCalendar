@@ -1,9 +1,12 @@
 package com.hjbalan.mycalendar.ui;
 
+import com.android.common.Rfc822Validator;
+import com.android.datetimepicker.date.DatePickerDialog;
+import com.android.datetimepicker.time.TimePickerDialog;
 import com.hjbalan.mycalendar.R;
 import com.hjbalan.mycalendar.entity.CalendarInfo;
 import com.hjbalan.mycalendar.event.Event;
-import com.hjbalan.mycalendar.utils.Utils;
+import com.hjbalan.mycalendar.utils.MyUtils;
 
 import android.app.Activity;
 import android.content.AsyncQueryHandler;
@@ -12,6 +15,9 @@ import android.database.Cursor;
 import android.net.Uri;
 import android.os.Bundle;
 import android.provider.CalendarContract;
+import android.text.format.DateFormat;
+import android.text.format.DateUtils;
+import android.text.format.Time;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -52,6 +58,12 @@ public class EditEventActivity extends Activity implements CompoundButton.OnChec
 
     private static final int TOKEN_QUERY = 1;
 
+    private static final String FRAG_TAG_DATE_PICKER = "datePickerDialogFragment";
+
+    private static final String FRAG_TAG_TIME_PICKER = "timePickerDialogFragment";
+
+    private static final String TAG = "EditActivity";
+
     private Event mEvent = null;
 
     private ArrayList<CalendarInfo> mCalendarInfos = new ArrayList<>();
@@ -82,6 +94,20 @@ public class EditEventActivity extends Activity implements CompoundButton.OnChec
 
     private Spinner mSpinnerRepeat;
 
+    private DatePickerDialog mDatePickerDialog;
+
+    private TimePickerDialog mTimePickerDialog;
+
+    private Time mStartTime;
+
+    private Time mEndTime;
+
+    private String mTimezone;
+
+    private boolean mAllDay = false;
+
+    private Rfc822Validator mEmailValidator;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -97,6 +123,11 @@ public class EditEventActivity extends Activity implements CompoundButton.OnChec
             mEventHandler.startQuery(TOKEN_QUERY, null, CalendarContract.Calendars.CONTENT_URI,
                     EVENT_PROJECTION, null, null, null);
         }
+
+        mTimezone = Time.getCurrentTimezone();
+        mStartTime = new Time(mTimezone);
+        mEndTime = new Time(mTimezone);
+        mEmailValidator = new Rfc822Validator(null);
 
         initView();
         preRenderView();
@@ -131,10 +162,10 @@ public class EditEventActivity extends Activity implements CompoundButton.OnChec
 
     private void preRenderView() {
         if (mEvent == null) {
-            long currentTimeMillis = System.currentTimeMillis();
-            renderSelectFromDateView(currentTimeMillis);
-            currentTimeMillis += 60 * 60 * 1000;
-            renderSelectToDateView(currentTimeMillis);
+            mStartTime.set(System.currentTimeMillis());
+            mEndTime.set(mStartTime.toMillis(false) + DateUtils.HOUR_IN_MILLIS);
+            renderSelectFromDateView(mStartTime.toMillis(false));
+            renderSelectToDateView(mEndTime.toMillis(false));
             return;
         } else {
 
@@ -142,13 +173,13 @@ public class EditEventActivity extends Activity implements CompoundButton.OnChec
     }
 
     private void renderSelectFromDateView(long fromMillis) {
-        String[] readableStrings = Utils.getReadableTime(this, fromMillis).split("-");
+        String[] readableStrings = MyUtils.getReadableTime(this, fromMillis).split("-");
         mBtnSelectFromDate.setText(readableStrings[0]);
         mBtnSelectFromTime.setText(readableStrings[1]);
     }
 
     private void renderSelectToDateView(long toMillis) {
-        String[] readableStrings = Utils.getReadableTime(this, toMillis).split("-");
+        String[] readableStrings = MyUtils.getReadableTime(this, toMillis).split("-");
         mBtnSelectToDate.setText(readableStrings[0]);
         mBtnSelectToTime.setText(readableStrings[1]);
     }
@@ -170,6 +201,23 @@ public class EditEventActivity extends Activity implements CompoundButton.OnChec
             return true;
         }
         return super.onOptionsItemSelected(item);
+    }
+
+    @Override
+    public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+        switch (buttonView.getId()) {
+            case R.id.cb_all_day:
+                mBtnSelectFromTime.setVisibility(isChecked ? View.GONE : View.VISIBLE);
+                mBtnSelectToTime.setVisibility(isChecked ? View.GONE : View.VISIBLE);
+                break;
+
+            case R.id.cb_chinese_event:
+
+                break;
+
+            default:
+                break;
+        }
     }
 
 //    private long addEvent() {
@@ -198,39 +246,22 @@ public class EditEventActivity extends Activity implements CompoundButton.OnChec
 //    }
 
     @Override
-    public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
-        switch (buttonView.getId()) {
-            case R.id.cb_all_day:
-                mBtnSelectFromTime.setVisibility(isChecked ? View.GONE : View.VISIBLE);
-                mBtnSelectToTime.setVisibility(isChecked ? View.GONE : View.VISIBLE);
-                break;
-
-            case R.id.cb_chinese_event:
-
-                break;
-
-            default:
-                break;
-        }
-    }
-
-    @Override
     public void onClick(View v) {
         switch (v.getId()) {
             case R.id.btn_date_from:
-
+                showDatePickerDialog(v, mStartTime);
                 break;
 
             case R.id.btn_time_from:
-
+                showTimePickerDialog(v, mStartTime);
                 break;
 
             case R.id.btn_date_to:
-
+                showDatePickerDialog(v, mEndTime);
                 break;
 
             case R.id.btn_time_to:
-
+                showTimePickerDialog(v, mEndTime);
                 break;
 
             case R.id.btn_select_calendar:
@@ -240,6 +271,30 @@ public class EditEventActivity extends Activity implements CompoundButton.OnChec
             default:
                 break;
         }
+    }
+
+    private void showDatePickerDialog(View v, Time time) {
+        mDatePickerDialog = (DatePickerDialog) getFragmentManager().findFragmentByTag(
+                FRAG_TAG_DATE_PICKER);
+        if (mDatePickerDialog != null) {
+            mDatePickerDialog.dismiss();
+        }
+        mDatePickerDialog = DatePickerDialog.newInstance(new DateListener(v),
+                time.year, time.month, time.monthDay);
+        mDatePickerDialog.setFirstDayOfWeek(MyUtils.getFirstDayOfWeekAsCalendar(this));
+        mDatePickerDialog.setYearRange(MyUtils.YEAR_MIN, MyUtils.YEAR_MAX);
+        mDatePickerDialog.show(getFragmentManager(), FRAG_TAG_DATE_PICKER);
+    }
+
+    private void showTimePickerDialog(View v, Time time) {
+        mTimePickerDialog = (TimePickerDialog) getFragmentManager().findFragmentByTag(
+                FRAG_TAG_TIME_PICKER);
+        if (mTimePickerDialog != null) {
+            mTimePickerDialog.dismiss();
+        }
+        mTimePickerDialog = TimePickerDialog.newInstance(null,
+                time.hour, time.minute, DateFormat.is24HourFormat(this));
+        mTimePickerDialog.show(getFragmentManager(), FRAG_TAG_TIME_PICKER);
     }
 
     @Override
@@ -265,6 +320,20 @@ public class EditEventActivity extends Activity implements CompoundButton.OnChec
     @Override
     public void onNothingSelected(AdapterView<?> parent) {
 
+    }
+
+    private class DateListener implements DatePickerDialog.OnDateSetListener {
+
+        View mView;
+
+        public DateListener(View view) {
+            mView = view;
+        }
+
+        @Override
+        public void onDateSet(DatePickerDialog dialog, int year, int monthOfYear, int dayOfMonth) {
+            Log.d(TAG, "onDateSet: " + year + " " + monthOfYear + " " + dayOfMonth);
+        }
     }
 
     private class EventHandler extends AsyncQueryHandler {

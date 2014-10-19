@@ -16,8 +16,12 @@
 */
 -->
 
-<com.hjbalan.mycalendar.ui.widget.TimePicker xmlns:android="http://schemas.android.com/apk/res/android"
-    android:id="@+id/timePicker"
+<com.hjbalan.mycalendar.ui.widget.DatePicker
+    android:id="@+id/datePicker"
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:lib="http://schemas.android.com/apk/res-auto"
     android:layout_width="wrap_content"
     android:layout_height="wrap_content"
-    android:layout_gravity="center_horizontal" />
+    android:layout_gravity="center_horizontal"
+    lib:dp_calendarViewShown="false"
+    lib:dp_spinnersShown="true" />

@@ -127,7 +127,7 @@ public class TimePicker extends FrameLayout {
         //int layoutResourceId = attributesArray.getResourceId(
         //        R.styleable.TimePicker_internalLayout, R.layout.time_picker);
         //attributesArray.recycle();
-        int layoutResourceId = R.layout.time_picker_holo;
+        int layoutResourceId = R.layout.time_picker_holo_custom;
 
         LayoutInflater inflater = (LayoutInflater) context.getSystemService(
                 Context.LAYOUT_INFLATER_SERVICE);

@@ -17,6 +17,7 @@ import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.provider.CalendarContract;
+import android.text.format.DateUtils;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -29,6 +30,7 @@ import android.widget.TextView;
 
 import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.TimeZone;
 
 import se.emilsjolander.stickylistheaders.StickyListHeadersListView;
 
@@ -270,11 +272,11 @@ public class MainActivity extends Activity implements CalendarView.OnFocusdMonth
         }
 
         if (mTodayDate == null) {
-            mTodayDate = Calendar.getInstance();
+            mTodayDate = Calendar.getInstance(TimeZone.getDefault());
             loadEvents(mTodayDate.getTimeInMillis(), mTodayDate.getTimeInMillis());
             mBtnCurrentDate.startAnimation(mFadeOutAnim);
         } else {
-            Calendar currentDate = Calendar.getInstance();
+            Calendar currentDate = Calendar.getInstance(TimeZone.getDefault());
             if (mTodayDate.get(Calendar.DAY_OF_MONTH) == currentDate.get(Calendar.DAY_OF_MONTH)) {
                 return;
             } else {
@@ -308,7 +310,8 @@ public class MainActivity extends Activity implements CalendarView.OnFocusdMonth
 
     @Override
     public void onTouchDate(CalendarView view, Calendar touchedDate) {
-        scrollTo(touchedDate.getTimeInMillis());
+        // add 12 hours to fix julian day bug such as 2014/10/19 00:00:00
+        scrollTo(touchedDate.getTimeInMillis() + 12 * DateUtils.HOUR_IN_MILLIS);
         updateTodayButton();
     }
 

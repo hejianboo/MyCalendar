@@ -93,7 +93,7 @@ public class TimePickerDialog extends AlertDialog
 
         LayoutInflater inflater =
                 (LayoutInflater) themeContext.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
-        View view = inflater.inflate(R.layout.time_picker_dialog, null);
+        View view = inflater.inflate(R.layout.time_picker_dialog_custom, null);
         setView(view);
         mTimePicker = (TimePicker) view.findViewById(R.id.timePicker);
 

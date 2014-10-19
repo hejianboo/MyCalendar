@@ -1,6 +1,6 @@
 package com.hjbalan.mycalendar.event;
 
-import com.hjbalan.mycalendar.utils.Utils;
+import com.hjbalan.mycalendar.utils.MyUtils;
 
 import android.content.ContentResolver;
 import android.content.ContentUris;
@@ -114,7 +114,7 @@ public class EventLoader {
     private static final int PROJECTION_DISPLAY_AS_ALLDAY = 19;
 
     static {
-        if (!Utils.isJellybeanOrLater()) {
+        if (!MyUtils.isJellybeanOrLater()) {
             EVENT_PROJECTION[PROJECTION_COLOR_INDEX] = Instances.CALENDAR_COLOR;
         }
     }

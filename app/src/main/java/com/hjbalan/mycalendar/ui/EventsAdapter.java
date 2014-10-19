@@ -178,7 +178,7 @@ public class EventsAdapter extends BaseAdapter implements
 
     public int indexOfStartDay(final long timeMillies) {
         int count = getCount();
-        int startDay = (int) Math.ceil(DateTimeUtils.toJulianDay(timeMillies));
+        int startDay = (int) DateTimeUtils.toJulianDayNumber(timeMillies);
         for (int i = 0; i < count; i++) {
             Event event = (Event) getItem(i);
             if (event.startDay == startDay) {

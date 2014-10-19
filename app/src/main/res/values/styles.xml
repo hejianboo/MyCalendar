@@ -98,7 +98,7 @@
     </style>
 
     <style name="Widget.Holo.DatePicker" parent="Widget.DatePicker">
-        <item name="dp_internalLayout">@layout/date_picker_holo</item>
+        <item name="dp_internalLayout">@layout/date_picker_holo_custom</item>
         <item name="dp_calendarViewShown">true</item>
     </style>
 
