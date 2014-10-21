@@ -3,17 +3,17 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:fillViewport="true"
-    android:paddingBottom="@dimen/activity_vertical_margin"
-    android:paddingLeft="@dimen/activity_horizontal_margin"
-    android:paddingRight="@dimen/activity_horizontal_margin"
-    android:paddingTop="@dimen/activity_vertical_margin"
     android:scrollbarStyle="outsideOverlay"
     tools:context="com.hjbalan.mycalendar.ui.EditEventActivity">
 
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:orientation="vertical">
+        android:orientation="vertical"
+        android:paddingBottom="@dimen/activity_vertical_margin"
+        android:paddingLeft="@dimen/activity_horizontal_margin"
+        android:paddingRight="@dimen/activity_horizontal_margin"
+        android:paddingTop="@dimen/activity_vertical_margin">
 
 
         <EditText
@@ -58,7 +58,7 @@
             android:layout_height="wrap_content"
             android:layout_marginLeft="@dimen/item_padding"
             android:layout_marginTop="@dimen/item_padding"
-            android:text="@string/edit_event_from"
+            android:text="@string/edit_event_start"
             android:textColor="@color/c2"
             android:textSize="@dimen/t4" />
 
@@ -70,7 +70,7 @@
             android:orientation="horizontal">
 
             <Button
-                android:id="@+id/btn_date_from"
+                android:id="@+id/btn_date_start"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_weight="4"
@@ -80,7 +80,7 @@
                 android:textSize="@dimen/t3" />
 
             <Button
-                android:id="@+id/btn_time_from"
+                android:id="@+id/btn_time_start"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_weight="2"
@@ -96,7 +96,7 @@
             android:layout_height="wrap_content"
             android:layout_marginLeft="@dimen/item_padding"
             android:layout_marginTop="@dimen/item_padding"
-            android:text="@string/edit_event_to"
+            android:text="@string/edit_event_end"
             android:textColor="@color/c2"
             android:textSize="@dimen/t4" />
 
@@ -108,7 +108,7 @@
             android:orientation="horizontal">
 
             <Button
-                android:id="@+id/btn_date_to"
+                android:id="@+id/btn_date_end"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_weight="4"
@@ -118,7 +118,7 @@
                 android:textSize="@dimen/t3" />
 
             <Button
-                android:id="@+id/btn_time_to"
+                android:id="@+id/btn_time_end"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_weight="2"
@@ -198,6 +198,15 @@
             android:spinnerMode="dropdown"
             android:textColor="@color/c1"
             android:textSize="@dimen/t3" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="@dimen/item_padding"
+            android:layout_marginTop="@dimen/item_padding"
+            android:text="@string/edit_event_select_calendar"
+            android:textColor="@color/c2"
+            android:textSize="@dimen/t4" />
 
         <Button
             android:id="@+id/btn_select_calendar"

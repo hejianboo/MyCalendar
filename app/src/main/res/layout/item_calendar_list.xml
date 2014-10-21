@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    android:paddingLeft="@dimen/item_padding"
+    android:paddingRight="@dimen/item_padding">
+
+    <TextView
+        android:id="@+id/tv_calendar_account"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:gravity="center_vertical"
+        android:padding="@dimen/item_padding"
+        android:textColor="@color/c2"
+        android:textSize="@dimen/t3" />
+
+    <RadioButton
+        android:id="@+id/rb_select_calendar"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@android:color/white"
+        android:button="@null"
+        android:drawablePadding="@dimen/item_padding"
+        android:drawableRight="@drawable/bg_rb_check_selector"
+        android:gravity="center_vertical"
+        android:padding="@dimen/item_padding"
+        android:textColor="@color/c1"
+        android:textSize="@dimen/t3" />
+
+</LinearLayout>

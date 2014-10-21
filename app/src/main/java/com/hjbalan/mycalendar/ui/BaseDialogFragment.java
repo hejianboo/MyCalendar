@@ -79,8 +79,10 @@ public class BaseDialogFragment extends DialogFragment implements OnClickListene
     @Override
     public Dialog onCreateDialog(Bundle savedInstanceState) {
         Dialog dialog = super.onCreateDialog(savedInstanceState);
-        dialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
-        dialog.setCanceledOnTouchOutside(mBuilder.mCanceledOnTouchOutside);
+        if (mBuilder != null) {
+            dialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
+            dialog.setCanceledOnTouchOutside(mBuilder.mCanceledOnTouchOutside);
+        }
         return dialog;
     }
 

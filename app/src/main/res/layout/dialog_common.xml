@@ -2,30 +2,34 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@android:color/white"
-    android:orientation="vertical">
+    android:orientation="vertical"
+    android:padding="@dimen/item_padding"
+    android:showDividers="middle">
 
     <TextView
         android:id="@+id/tv_title"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:gravity="center"
-        android:padding="16dp"
-        android:text="zheshibiaoti" />
+        android:gravity="center_vertical"
+        android:padding="@dimen/item_padding"
+        android:text="zheshibiaoti"
+        android:textColor="@color/c1"
+        android:textSize="@dimen/t2" />
 
     <FrameLayout
         android:id="@+id/fl_dialog_content"
         android:layout_width="match_parent"
         android:layout_height="0dp"
         android:layout_weight="1"
-        android:padding="16dp">
+        android:padding="@dimen/item_padding">
 
         <TextView
             android:id="@+id/tv_message"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_gravity="center_horizontal"
-            android:text="this is message" />
+            android:text="this is message"
+            android:textColor="@color/c1"
+            android:textSize="@dimen/t3" />
     </FrameLayout>
 
     <RelativeLayout

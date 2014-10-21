@@ -6,9 +6,10 @@ import com.android.datetimepicker.time.TimePickerDialog;
 import com.hjbalan.mycalendar.R;
 import com.hjbalan.mycalendar.entity.CalendarInfo;
 import com.hjbalan.mycalendar.event.Event;
+import com.hjbalan.mycalendar.utils.MyPreferencesManager;
 import com.hjbalan.mycalendar.utils.MyUtils;
 
-import android.app.Activity;
+import android.app.DialogFragment;
 import android.content.AsyncQueryHandler;
 import android.content.ContentResolver;
 import android.database.Cursor;
@@ -31,8 +32,10 @@ import android.widget.Spinner;
 
 import java.util.ArrayList;
 
-public class EditEventActivity extends Activity implements CompoundButton.OnCheckedChangeListener,
-        View.OnClickListener, AdapterView.OnItemSelectedListener {
+public class EditEventActivity extends BaseActivity
+        implements CompoundButton.OnCheckedChangeListener,
+        View.OnClickListener, AdapterView.OnItemSelectedListener,
+        SelectCalendarDialogFragment.SelectCalendarListener {
 
     public static final String[] EVENT_PROJECTION = new String[]{
             CalendarContract.Calendars._ID,                           // 0
@@ -40,7 +43,7 @@ public class EditEventActivity extends Activity implements CompoundButton.OnChec
             CalendarContract.Calendars.CALENDAR_DISPLAY_NAME,         // 2
             CalendarContract.Calendars.OWNER_ACCOUNT,                 // 3
             CalendarContract.Calendars.NAME,                          // 4
-            CalendarContract.Calendars.ACCOUNT_TYPE,                  // 5
+            CalendarContract.Calendars.ACCOUNT_TYPE                   // 5
     };
 
     // The indices for the projection array above.
@@ -76,13 +79,13 @@ public class EditEventActivity extends Activity implements CompoundButton.OnChec
 
     private CheckBox mCbChineseDate;
 
-    private Button mBtnSelectFromDate;
+    private Button mBtnSelectStartDate;
 
-    private Button mBtnSelectFromTime;
+    private Button mBtnSelectStartTime;
 
-    private Button mBtnSelectToDate;
+    private Button mBtnSelectEndDate;
 
-    private Button mBtnSelectToTime;
+    private Button mBtnSelectEndTime;
 
     private EditText mEtDesc;
 
@@ -107,6 +110,8 @@ public class EditEventActivity extends Activity implements CompoundButton.OnChec
     private boolean mAllDay = false;
 
     private Rfc822Validator mEmailValidator;
+
+    private int mSelectedPosition = 0;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -138,10 +143,10 @@ public class EditEventActivity extends Activity implements CompoundButton.OnChec
         mEtTitle = (EditText) findViewById(R.id.et_title);
         mCbAllDay = (CheckBox) findViewById(R.id.cb_all_day);
         mCbChineseDate = (CheckBox) findViewById(R.id.cb_chinese_event);
-        mBtnSelectFromDate = (Button) findViewById(R.id.btn_date_from);
-        mBtnSelectFromTime = (Button) findViewById(R.id.btn_time_from);
-        mBtnSelectToDate = (Button) findViewById(R.id.btn_date_to);
-        mBtnSelectToTime = (Button) findViewById(R.id.btn_time_to);
+        mBtnSelectStartDate = (Button) findViewById(R.id.btn_date_start);
+        mBtnSelectStartTime = (Button) findViewById(R.id.btn_time_start);
+        mBtnSelectEndDate = (Button) findViewById(R.id.btn_date_end);
+        mBtnSelectEndTime = (Button) findViewById(R.id.btn_time_end);
         mEtDesc = (EditText) findViewById(R.id.et_desc);
         mBtnSelectCalendar = (Button) findViewById(R.id.btn_select_calendar);
         mSpinnerReminder = (Spinner) findViewById(R.id.sp_reminder);
@@ -150,14 +155,15 @@ public class EditEventActivity extends Activity implements CompoundButton.OnChec
 
         mCbAllDay.setOnCheckedChangeListener(this);
         mCbChineseDate.setOnCheckedChangeListener(this);
-        mBtnSelectFromDate.setOnClickListener(this);
-        mBtnSelectFromTime.setOnClickListener(this);
-        mBtnSelectToDate.setOnClickListener(this);
-        mBtnSelectToTime.setOnClickListener(this);
+        mBtnSelectStartDate.setOnClickListener(this);
+        mBtnSelectStartTime.setOnClickListener(this);
+        mBtnSelectEndDate.setOnClickListener(this);
+        mBtnSelectEndTime.setOnClickListener(this);
         mBtnSelectCalendar.setOnClickListener(this);
         mSpinnerReminder.setOnItemSelectedListener(this);
         mSpinnerReminderMethod.setOnItemSelectedListener(this);
         mSpinnerRepeat.setOnItemSelectedListener(this);
+
     }
 
     private void preRenderView() {
@@ -174,14 +180,14 @@ public class EditEventActivity extends Activity implements CompoundButton.OnChec
 
     private void renderSelectFromDateView(long fromMillis) {
         String[] readableStrings = MyUtils.getReadableTime(this, fromMillis).split("-");
-        mBtnSelectFromDate.setText(readableStrings[0]);
-        mBtnSelectFromTime.setText(readableStrings[1]);
+        mBtnSelectStartDate.setText(readableStrings[0]);
+        mBtnSelectStartTime.setText(readableStrings[1]);
     }
 
     private void renderSelectToDateView(long toMillis) {
         String[] readableStrings = MyUtils.getReadableTime(this, toMillis).split("-");
-        mBtnSelectToDate.setText(readableStrings[0]);
-        mBtnSelectToTime.setText(readableStrings[1]);
+        mBtnSelectEndDate.setText(readableStrings[0]);
+        mBtnSelectEndTime.setText(readableStrings[1]);
     }
 
     @Override
@@ -207,8 +213,8 @@ public class EditEventActivity extends Activity implements CompoundButton.OnChec
     public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
         switch (buttonView.getId()) {
             case R.id.cb_all_day:
-                mBtnSelectFromTime.setVisibility(isChecked ? View.GONE : View.VISIBLE);
-                mBtnSelectToTime.setVisibility(isChecked ? View.GONE : View.VISIBLE);
+                mBtnSelectStartTime.setVisibility(isChecked ? View.GONE : View.VISIBLE);
+                mBtnSelectEndTime.setVisibility(isChecked ? View.GONE : View.VISIBLE);
                 break;
 
             case R.id.cb_chinese_event:
@@ -248,23 +254,28 @@ public class EditEventActivity extends Activity implements CompoundButton.OnChec
     @Override
     public void onClick(View v) {
         switch (v.getId()) {
-            case R.id.btn_date_from:
+            case R.id.btn_date_start:
                 showDatePickerDialog(v, mStartTime);
                 break;
 
-            case R.id.btn_time_from:
+            case R.id.btn_time_start:
                 showTimePickerDialog(v, mStartTime);
                 break;
 
-            case R.id.btn_date_to:
+            case R.id.btn_date_end:
                 showDatePickerDialog(v, mEndTime);
                 break;
 
-            case R.id.btn_time_to:
+            case R.id.btn_time_end:
                 showTimePickerDialog(v, mEndTime);
                 break;
 
             case R.id.btn_select_calendar:
+                if (mCalendarInfos != null && mCalendarInfos.size() > 0) {
+                    SelectCalendarDialogFragment
+                            .newInstance(EditEventActivity.this, mCalendarInfos, mSelectedPosition)
+                            .show(getFragmentManager(), SelectCalendarDialogFragment.TAG);
+                }
 
                 break;
 
@@ -322,6 +333,14 @@ public class EditEventActivity extends Activity implements CompoundButton.OnChec
 
     }
 
+    @Override
+    public void onCalendarSelected(DialogFragment dialogFragment, int position) {
+        mSelectedPosition = position;
+        CalendarInfo calendarInfo = mCalendarInfos.get(position);
+        MyPreferencesManager.getInstance().saveSelectedCalendarName(calendarInfo.calendarName);
+        mBtnSelectCalendar.setText(calendarInfo.displayName);
+    }
+
     private class DateListener implements DatePickerDialog.OnDateSetListener {
 
         View mView;
@@ -370,6 +389,7 @@ public class EditEventActivity extends Activity implements CompoundButton.OnChec
             } else {
                 mCalendarInfos.clear();
                 if (cursor.getCount() > 0) {
+                    String name = MyPreferencesManager.getInstance().getSelectedCalendarName();
                     while (cursor.moveToNext()) {
                         if (!cursor.getString(PROJECTION_ACCOUNT_NAME_INDEX)
                                 .equals(cursor.getString(PROJECTION_OWNER_ACCOUNT_INDEX))) {
@@ -387,14 +407,17 @@ public class EditEventActivity extends Activity implements CompoundButton.OnChec
                         calendarInfo.accountType = cursor.getString(
                                 PROJECTION_ACCOUNT_TYPE);
                         mCalendarInfos.add(calendarInfo);
+                        if (calendarInfo.calendarName.equals(name)) {
+                            mSelectedPosition = cursor.getPosition();
+                        }
                         Log.d("Setting", "calendar info is \r\n" + calendarInfo.toString());
                     }
                 }
-
                 if (mCalendarInfos.size() > 0) {
-                    mBtnSelectCalendar.setText(mCalendarInfos.get(0).calendarName);
+                    mBtnSelectCalendar.setText(mCalendarInfos.get(mSelectedPosition).displayName);
                 }
             }
         }
     }
+
 }

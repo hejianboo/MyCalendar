@@ -10,6 +10,8 @@ public class MyPreferencesManager {
 
     private static final String SHOW_CHINESE_CAL = "show_chinese_cal";
 
+    private static final String SELECTED_CALENDAR = "selected_calendar";
+
     private static MyPreferencesManager mManager;
 
     private SharedPreferences mPreferences;
@@ -32,6 +34,14 @@ public class MyPreferencesManager {
 
     public boolean isShowChineseCalendar() {
         return getBoolean(SHOW_CHINESE_CAL, false);
+    }
+
+    public void saveSelectedCalendarName(String name) {
+        putString(SELECTED_CALENDAR, name);
+    }
+
+    public String getSelectedCalendarName() {
+        return getString(SELECTED_CALENDAR);
     }
 
     public void putBoolean(String key, boolean value) {

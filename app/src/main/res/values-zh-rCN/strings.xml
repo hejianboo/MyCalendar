@@ -49,12 +49,13 @@
     <string name="settings_add_account">添加账户</string>
 
     <string name="edit_event_title">标题</string>
-    <string name="edit_event_from">从</string>
-    <string name="edit_event_to">到</string>
+    <string name="edit_event_start">从</string>
+    <string name="edit_event_end">到</string>
     <string name="edit_all_day">全天事件</string>
     <string name="edit_event_chinese_event">农历事件</string>
     <string name="edit_event_desc">说明</string>
     <string name="edit_event_reminder">提醒</string>
     <string name="edit_event_repeat">重复</string>
+    <string name="edit_event_select_calendar">日历</string>
 
 </resources>
