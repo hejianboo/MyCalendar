@@ -2,6 +2,7 @@ package com.hjbalan.mycalendar.ui;
 
 import com.hjbalan.mycalendar.R;
 import com.hjbalan.mycalendar.event.Event;
+import com.hjbalan.mycalendar.utils.MyUtils;
 
 import org.joda.time.DateTimeUtils;
 
@@ -178,7 +179,7 @@ public class EventsAdapter extends BaseAdapter implements
 
     public int indexOfStartDay(final long timeMillies) {
         int count = getCount();
-        int startDay = (int) DateTimeUtils.toJulianDayNumber(timeMillies);
+        int startDay = MyUtils.getJulianDay(timeMillies);
         for (int i = 0; i < count; i++) {
             Event event = (Event) getItem(i);
             if (event.startDay == startDay) {

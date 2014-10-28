@@ -2,6 +2,7 @@ package com.hjbalan.mycalendar.ui;
 
 import com.android.common.Rfc822Validator;
 import com.android.datetimepicker.date.DatePickerDialog;
+import com.android.datetimepicker.time.RadialPickerLayout;
 import com.android.datetimepicker.time.TimePickerDialog;
 import com.hjbalan.mycalendar.R;
 import com.hjbalan.mycalendar.entity.CalendarInfo;
@@ -29,6 +30,7 @@ import android.widget.CheckBox;
 import android.widget.CompoundButton;
 import android.widget.EditText;
 import android.widget.Spinner;
+import android.widget.TextView;
 
 import java.util.ArrayList;
 
@@ -37,7 +39,7 @@ public class EditEventActivity extends BaseActivity
         View.OnClickListener, AdapterView.OnItemSelectedListener,
         SelectCalendarDialogFragment.SelectCalendarListener {
 
-    public static final String[] EVENT_PROJECTION = new String[]{
+    public static final String[] CALENDAR_PROJECTION = new String[]{
             CalendarContract.Calendars._ID,                           // 0
             CalendarContract.Calendars.ACCOUNT_NAME,                  // 1
             CalendarContract.Calendars.CALENDAR_DISPLAY_NAME,         // 2
@@ -59,7 +61,7 @@ public class EditEventActivity extends BaseActivity
 
     private static final int PROJECTION_ACCOUNT_TYPE = 5;
 
-    private static final int TOKEN_QUERY = 1;
+    private static final int TOKEN_QUERY_CALENDAR = 1;
 
     private static final String FRAG_TAG_DATE_PICKER = "datePickerDialogFragment";
 
@@ -125,8 +127,9 @@ public class EditEventActivity extends BaseActivity
         mEventHandler = new EventHandler(getContentResolver());
 
         if (savedInstanceState == null) {
-            mEventHandler.startQuery(TOKEN_QUERY, null, CalendarContract.Calendars.CONTENT_URI,
-                    EVENT_PROJECTION, null, null, null);
+            mEventHandler
+                    .startQuery(TOKEN_QUERY_CALENDAR, null, CalendarContract.Calendars.CONTENT_URI,
+                            CALENDAR_PROJECTION, null, null, null);
         }
 
         mTimezone = Time.getCurrentTimezone();
@@ -170,24 +173,28 @@ public class EditEventActivity extends BaseActivity
         if (mEvent == null) {
             mStartTime.set(System.currentTimeMillis());
             mEndTime.set(mStartTime.toMillis(false) + DateUtils.HOUR_IN_MILLIS);
-            renderSelectFromDateView(mStartTime.toMillis(false));
-            renderSelectToDateView(mEndTime.toMillis(false));
+            setDate(mBtnSelectStartDate, mStartTime.toMillis(false));
+            setTime(mBtnSelectStartTime, mStartTime.toMillis(false));
+            setDate(mBtnSelectEndDate, mEndTime.toMillis(false));
+            setTime(mBtnSelectEndTime, mEndTime.toMillis(false));
             return;
         } else {
 
         }
     }
 
-    private void renderSelectFromDateView(long fromMillis) {
-        String[] readableStrings = MyUtils.getReadableTime(this, fromMillis).split("-");
-        mBtnSelectStartDate.setText(readableStrings[0]);
-        mBtnSelectStartTime.setText(readableStrings[1]);
+    private void setDate(TextView view, long millis) {
+        int flags = DateUtils.FORMAT_SHOW_DATE | DateUtils.FORMAT_SHOW_YEAR
+                | DateUtils.FORMAT_SHOW_WEEKDAY | DateUtils.FORMAT_ABBREV_MONTH
+                | DateUtils.FORMAT_ABBREV_WEEKDAY;
+
+        view.setText(DateUtils.formatDateTime(this, millis, flags));
     }
 
-    private void renderSelectToDateView(long toMillis) {
-        String[] readableStrings = MyUtils.getReadableTime(this, toMillis).split("-");
-        mBtnSelectEndDate.setText(readableStrings[0]);
-        mBtnSelectEndTime.setText(readableStrings[1]);
+    private void setTime(TextView view, long millis) {
+        int flags = DateUtils.FORMAT_SHOW_TIME | DateUtils.FORMAT_CAP_NOON_MIDNIGHT
+                | DateUtils.FORMAT_24HOUR;
+        view.setText(DateUtils.formatDateTime(this, millis, flags));
     }
 
     @Override
@@ -204,6 +211,7 @@ public class EditEventActivity extends BaseActivity
         // as you specify a parent activity in AndroidManifest.xml.
         int id = item.getItemId();
         if (id == R.id.action_finish) {
+            addEvent();
             return true;
         }
         return super.onOptionsItemSelected(item);
@@ -226,7 +234,7 @@ public class EditEventActivity extends BaseActivity
         }
     }
 
-//    private long addEvent() {
+    private long addEvent() {
 //        long calID = 3;
 //        long startMillis = 0;
 //        long endMillis = 0;
@@ -249,7 +257,16 @@ public class EditEventActivity extends BaseActivity
 //        Uri uri = cr.insert(Events.CONTENT_URI, values);
 //
 //        long eventID = Long.parseLong(uri.getLastPathSegment());
-//    }
+        return 0;
+    }
+
+    private Event fillEventFromUI() {
+        if (mEvent == null) {
+            mEvent = Event.newInstance();
+        }
+
+        return mEvent;
+    }
 
     @Override
     public void onClick(View v) {
@@ -303,7 +320,7 @@ public class EditEventActivity extends BaseActivity
         if (mTimePickerDialog != null) {
             mTimePickerDialog.dismiss();
         }
-        mTimePickerDialog = TimePickerDialog.newInstance(null,
+        mTimePickerDialog = TimePickerDialog.newInstance(new TimeListener(v),
                 time.hour, time.minute, DateFormat.is24HourFormat(this));
         mTimePickerDialog.show(getFragmentManager(), FRAG_TAG_TIME_PICKER);
     }
@@ -352,6 +369,107 @@ public class EditEventActivity extends BaseActivity
         @Override
         public void onDateSet(DatePickerDialog dialog, int year, int monthOfYear, int dayOfMonth) {
             Log.d(TAG, "onDateSet: " + year + " " + monthOfYear + " " + dayOfMonth);
+            // Cache the member variables locally to avoid inner class overhead.
+            Time startTime = mStartTime;
+            Time endTime = mEndTime;
+
+            // Cache the start and end millis so that we limit the number
+            // of calls to normalize() and toMillis(), which are fairly
+            // expensive.
+            long startMillis;
+            long endMillis;
+            if (mView == mBtnSelectStartDate) {
+                // The start date was changed.
+                int yearDuration = endTime.year - startTime.year;
+                int monthDuration = endTime.month - startTime.month;
+                int monthDayDuration = endTime.monthDay - startTime.monthDay;
+
+                startTime.year = year;
+                startTime.month = monthOfYear;
+                startTime.monthDay = dayOfMonth;
+                startMillis = startTime.normalize(true);
+
+                // Also update the end date to keep the duration constant.
+                endTime.year = year + yearDuration;
+                endTime.month = monthOfYear + monthDuration;
+                endTime.monthDay = dayOfMonth + monthDayDuration;
+                endMillis = endTime.normalize(true);
+
+                // If the start date has changed then update the repeats.
+//                populateRepeats();
+
+            } else {
+                // The end date was changed.
+                startMillis = startTime.toMillis(true);
+                endTime.year = year;
+                endTime.month = monthOfYear;
+                endTime.monthDay = dayOfMonth;
+                endMillis = endTime.normalize(true);
+
+                // Do not allow an event to have an end time before the start
+                // time.
+                if (endTime.before(startTime)) {
+                    endTime.set(startTime);
+                    endMillis = startMillis;
+                }
+            }
+
+            setDate(mBtnSelectStartDate, startMillis);
+            setDate(mBtnSelectEndDate, endMillis);
+        }
+    }
+
+    private class TimeListener implements TimePickerDialog.OnTimeSetListener {
+
+        View mView;
+
+        public TimeListener(View view) {
+            mView = view;
+        }
+
+        @Override
+        public void onTimeSet(RadialPickerLayout view, int hourOfDay, int minute) {
+            Log.d(TAG, "onTimeSet: " + hourOfDay + " " + minute);
+
+            // Cache the member variables locally to avoid inner class overhead.
+            Time startTime = mStartTime;
+            Time endTime = mEndTime;
+
+            // Cache the start and end millis so that we limit the number
+            // of calls to normalize() and toMillis(), which are fairly
+            // expensive.
+            long startMillis;
+            long endMillis;
+            if (mView == mBtnSelectStartTime) {
+                // The start time was changed.
+                int hourDuration = endTime.hour - startTime.hour;
+                int minuteDuration = endTime.minute - startTime.minute;
+
+                startTime.hour = hourOfDay;
+                startTime.minute = minute;
+                startMillis = startTime.normalize(true);
+
+                // Also update the end time to keep the duration constant.
+                endTime.hour = hourOfDay + hourDuration;
+                endTime.minute = minute + minuteDuration;
+
+            } else {
+                // The end time was changed.
+                startMillis = startTime.toMillis(true);
+                endTime.hour = hourOfDay;
+                endTime.minute = minute;
+
+                // Move to the start time if the end time is before the start
+                // time.
+                if (endTime.before(startTime)) {
+                    endTime.monthDay = startTime.monthDay + 1;
+                }
+            }
+
+            endMillis = endTime.normalize(true);
+            setDate(mBtnSelectEndDate, endMillis);
+            setTime(mBtnSelectStartTime, startMillis);
+            setTime(mBtnSelectEndTime, endMillis);
         }
     }
 

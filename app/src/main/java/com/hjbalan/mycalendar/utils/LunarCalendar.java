@@ -272,7 +272,7 @@ public class LunarCalendar {
      * @param year 将要计算的年份
      * @return 返回传入年份的总天数
      */
-    private static int daysInLunarYear(int year) {
+    public static int daysInLunarYear(int year) {
         int i, sum = 348;
         if (leapMonth(year) != 0) {
             sum = 377;
@@ -293,7 +293,7 @@ public class LunarCalendar {
      * @param month 将要计算的月份
      * @return 传回农历 year年month月的总天数
      */
-    private static int daysInLunarMonth(int year, int month) {
+    public static int daysInLunarMonth(int year, int month) {
         if ((LUNAR_INFO[year - MIN_YEAR] & (0x100000 >> month)) == 0) {
             return 29;
         } else {
@@ -307,7 +307,7 @@ public class LunarCalendar {
      * @param year 将要计算的年份
      * @return 传回农历 year年闰哪个月1-12, 没闰传回 0
      */
-    private static int leapMonth(int year) {
+    public static int leapMonth(int year) {
         return (int) ((LUNAR_INFO[year - MIN_YEAR] & 0xF00000)) >> 20;
     }
 

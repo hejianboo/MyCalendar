@@ -144,6 +144,8 @@ public class DatePicker extends FrameLayout {
 
     private boolean mIsChineseCalendar = false;
 
+    private int mLeapMonth = 0;
+
     public DatePicker(Context context) {
         this(context, null);
     }
@@ -186,9 +188,8 @@ public class DatePicker extends FrameLayout {
                 // take care of wrapping of days and months to update greater
                 // fields
                 if (picker == mDaySpinner) {
-                    // Log.d("picker", "day picker is changed newVal = " +
-                    // newVal + "& oldVal = "
-                    // + oldVal);
+                    Log.d("picker", "day picker is changed newVal = " + newVal + "& oldVal = "
+                            + oldVal);
                     int maxDayOfMonth = mIsChineseCalendar ? mNumberOfChineseDays.length
                             : mTempDate.getActualMaximum(Calendar.DAY_OF_MONTH);
                     if (mIsChineseCalendar) {
@@ -211,16 +212,15 @@ public class DatePicker extends FrameLayout {
                         }
                     }
                 } else if (picker == mMonthSpinner) {
-                    // Log.d("picker", "month picker is changed newVal = " +
-                    // newVal + "& oldVal = "
-                    // + oldVal);
+                    Log.d("picker", "month picker is changed newVal = " + newVal + "& oldVal = "
+                            + oldVal);
                     if (mIsChineseCalendar) {
-                        if (oldVal == 11 && newVal == 0) {
+                        if (oldVal == mChineseMonths.length && newVal == 0) {
                             mCurrentChineseMonth = newVal + 1;
                             if (mCurrentChineseYear < mMaxChineseDate[0]) {
                                 mCurrentChineseYear++;
                             }
-                        } else if (oldVal == 0 && newVal == 11) {
+                        } else if (oldVal == 0 && newVal == mChineseMonths.length) {
                             mCurrentChineseMonth = newVal + 1;
                             if (mCurrentChineseYear > mMinChineseDate[0]) {
                                 mCurrentChineseYear--;
@@ -238,9 +238,8 @@ public class DatePicker extends FrameLayout {
                         }
                     }
                 } else if (picker == mYearSpinner) {
-                    // Log.d("picker", "year picker is changed newVal = " +
-                    // newVal + "& oldVal = "
-                    // + oldVal);
+                    Log.d("picker", "year picker is changed newVal = " + newVal + "& oldVal = "
+                            + oldVal);
                     if (mIsChineseCalendar) {
                         mCurrentChineseYear += newVal - oldVal;
                     } else {
@@ -250,32 +249,30 @@ public class DatePicker extends FrameLayout {
                     throw new IllegalArgumentException();
                 }
 
-//				Log.d("picker", "selected chinese date is " + mCurrentChineseYear + "/"
-//						+ mCurrentChineseMonth + "/" + mCurrentChineseDay);
+                Log.d("picker", "selected chinese date is " + mCurrentChineseYear + "/"
+                        + mCurrentChineseMonth + "/" + mCurrentChineseDay);
 
                 // convert Chinese date to gregorian date
                 if (mIsChineseCalendar) {
-                    int numberOfDays = LunarCalendar.daysInMonth(mCurrentChineseYear,
-                            mCurrentChineseMonth, false);
-                    if (numberOfDays <= mCurrentChineseDay) {
-                        mCurrentChineseDay = numberOfDays;
-                    }
+                    mLeapMonth = LunarCalendar.leapMonth(mCurrentChineseYear);
+                    computeChineseMonth();
+                    boolean isLeapMonth = isLeapMonth();
+                    int chineseMonth = computeChineseDayOfMonth();
                     int[] solar = LunarCalendar.lunarToSolar(mCurrentChineseYear,
-                            mCurrentChineseMonth, mCurrentChineseDay, false);
-//					Log.d("picker", "compute solar date is " + solar[0] + "/" + solar[1] + "/"
-//							+ solar[2]);
+                            chineseMonth, mCurrentChineseDay, isLeapMonth);
+                    Log.d("picker", "compute solar date is " + solar[0] + "/" + solar[1] + "/"
+                            + solar[2]);
 
                     mTempDate.set(solar[0], solar[1] - 1, solar[2]);
                 }
-//				Log.d("picker",
-//						"selected date is " + mTempDate.get(Calendar.YEAR) + "/"
-//								+ mTempDate.get(Calendar.MONTH) + "/"
-//								+ mTempDate.get(Calendar.DAY_OF_MONTH));
+                Log.d("picker",
+                        "selected date is " + mTempDate.get(Calendar.YEAR) + "/"
+                                + mTempDate.get(Calendar.MONTH) + "/"
+                                + mTempDate.get(Calendar.DAY_OF_MONTH));
 
                 // now set the date to the adjusted one
                 setDate(mTempDate.get(Calendar.YEAR), mTempDate.get(Calendar.MONTH),
                         mTempDate.get(Calendar.DAY_OF_MONTH));
-                computeChineseDate();
                 updateSpinners();
                 // updateCalendarView();
                 notifyDateChanged();
@@ -374,6 +371,37 @@ public class DatePicker extends FrameLayout {
         mCurrentChineseYear = chinese.get(ChineseCalendar.CHINESE_YEAR);
         mCurrentChineseMonth = chinese.get(ChineseCalendar.CHINESE_MONTH);
         mCurrentChineseDay = chinese.get(ChineseCalendar.CHINESE_DATE);
+        if (mCurrentChineseMonth < 0) {
+            mCurrentChineseMonth = -mCurrentChineseMonth + 1;
+        }
+
+        computeChineseDayOfMonth();
+    }
+
+    private int computeChineseDayOfMonth() {
+        int chineseMonth;
+        if (mLeapMonth == 0) {
+            chineseMonth = mCurrentChineseMonth;
+        } else {
+            if (mLeapMonth <= mCurrentChineseMonth - 1) {
+                chineseMonth = mCurrentChineseMonth - 1;
+            } else {
+                chineseMonth = mCurrentChineseMonth;
+            }
+        }
+        int numberOfDays = LunarCalendar.daysInMonth(mCurrentChineseYear,
+                chineseMonth, isLeapMonth());
+
+        if (numberOfDays <= mCurrentChineseDay) {
+            mCurrentChineseDay = numberOfDays;
+        }
+
+        Log.d("picker", "numbers of days chinese month is " + numberOfDays);
+        mNumberOfChineseDays = new String[numberOfDays];
+        for (int i = 0; i < numberOfDays; i++) {
+            mNumberOfChineseDays[i] = ChineseCalendar.chineseDateNames[i + 1];
+        }
+        return chineseMonth;
     }
 
     /**
@@ -392,8 +420,8 @@ public class DatePicker extends FrameLayout {
         mMinDate.setTimeInMillis(minDate);
 
         mMinChineseDate = new int[]{1901, 1, 1};
-//		Log.d("picker", "min chinese date is " + mMinChineseDate[0] + "/" + mMinChineseDate[1]
-//				+ "/" + mMinChineseDate[2]);
+        Log.d("picker", "min chinese date is " + mMinChineseDate[0] + "/" + mMinChineseDate[1]
+                + "/" + mMinChineseDate[2]);
         // mCalendarView.setMinDate(minDate);
         if (mCurrentDate.before(mMinDate)) {
             mCurrentDate.setTimeInMillis(mMinDate.getTimeInMillis());
@@ -432,8 +460,8 @@ public class DatePicker extends FrameLayout {
         mMaxDate.setTimeInMillis(maxDate);
 
         mMaxChineseDate = new int[]{2099, 1, 1};
-//		Log.d("picker", "max chinese date is " + mMaxChineseDate[0] + "/" + mMaxChineseDate[1]
-//				+ "/" + mMaxChineseDate[2]);
+        Log.d("picker", "max chinese date is " + mMaxChineseDate[0] + "/" + mMaxChineseDate[1]
+                + "/" + mMaxChineseDate[2]);
         // mCalendarView.setMaxDate(maxDate);
         if (mCurrentDate.after(mMaxDate)) {
             mCurrentDate.setTimeInMillis(mMaxDate.getTimeInMillis());
@@ -522,7 +550,6 @@ public class DatePicker extends FrameLayout {
      * Gets whether the {@link CalendarView} is shown.
      *
      * @return True if the calendar view is shown.
-     * @see #getCalendarView()
      */
     public boolean getCalendarViewShown() {
         // return mCalendarView.isShown();
@@ -586,24 +613,39 @@ public class DatePicker extends FrameLayout {
 
         mNumberOfMonths = mTempDate.getActualMaximum(Calendar.MONTH) + 1;
         mShortMonths = new String[mNumberOfMonths];
-        mChineseMonths = new String[mNumberOfMonths];
         for (int i = 0; i < mNumberOfMonths; i++) {
             mShortMonths[i] = String.format("%d", i + 1);
-            mChineseMonths[i] = ChineseCalendar.chineseMonthNames[i + 1] + "月";
         }
 
-        computeChineseDate();
+        mLeapMonth = LunarCalendar.leapMonth(mTempDate.get(Calendar.YEAR));
+        computeChineseMonth();
     }
 
-    private void computeChineseDate() {
-        ChineseCalendar c = new ChineseCalendar(mCurrentDate);
-        int numberOfDays = LunarCalendar.daysInMonth(c.get(ChineseCalendar.CHINESE_YEAR),
-                c.get(ChineseCalendar.CHINESE_MONTH), false);
-//		Log.d("picker", "numbers of days chinese month is " + numberOfDays);
-        mNumberOfChineseDays = new String[numberOfDays];
-        for (int i = 0; i < numberOfDays; i++) {
-            mNumberOfChineseDays[i] = ChineseCalendar.chineseDateNames[i + 1];
+    private void computeChineseMonth() {
+        mChineseMonths = mLeapMonth == 0 ? new String[mNumberOfMonths]
+                : new String[mNumberOfMonths + 1];
+
+        if (mCurrentChineseMonth >= mChineseMonths.length) {
+            mCurrentChineseMonth = mChineseMonths.length;
         }
+        for (int j = 0; j < mChineseMonths.length; j++) {
+            int monthNameIndex;
+            if (mLeapMonth == 0) {
+                monthNameIndex = j + 1;
+            } else {
+                monthNameIndex = mLeapMonth < j + 1 ? j : j + 1;
+            }
+            mChineseMonths[j] = ChineseCalendar.chineseMonthNames[monthNameIndex] + "月";
+            if (mLeapMonth > 0 && mLeapMonth == j + 1) {
+                String month = mChineseMonths[j];
+                j++;
+                mChineseMonths[j] = "闰" + month;
+            }
+        }
+    }
+
+    private boolean isLeapMonth() {
+        return (mLeapMonth != 0 && mLeapMonth == mCurrentChineseMonth - 1);
     }
 
     /**
@@ -671,7 +713,7 @@ public class DatePicker extends FrameLayout {
         mSelectedDate.set(year, month, dayOfMonth);
         computeCurrentChineseDate();
         updateSpinners();
-        // updateCalendarView();
+//        updateCalendarView();
         notifyDateChanged();
     }
 
@@ -756,7 +798,7 @@ public class DatePicker extends FrameLayout {
 
                 mMonthSpinner.setDisplayedValues(null);
                 mMonthSpinner.setMinValue(mCurrentChineseMonth - 1);
-                mMonthSpinner.setMaxValue(11);
+                mMonthSpinner.setMaxValue(mChineseMonths.length - 1);
                 mMonthSpinner.setWrapSelectorWheel(false);
             } else if (isCurrentChineseDate(mMaxChineseDate)) {
                 mDaySpinner.setDisplayedValues(null);
@@ -774,7 +816,7 @@ public class DatePicker extends FrameLayout {
                 mDaySpinner.setWrapSelectorWheel(true);
                 mMonthSpinner.setDisplayedValues(null);
                 mMonthSpinner.setMinValue(0);
-                mMonthSpinner.setMaxValue(11);
+                mMonthSpinner.setMaxValue(mChineseMonths.length - 1);
                 mMonthSpinner.setWrapSelectorWheel(true);
             }
         } else {

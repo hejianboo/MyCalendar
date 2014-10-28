@@ -5,6 +5,7 @@ import com.hjbalan.mycalendar.event.Event;
 import com.hjbalan.mycalendar.event.EventLoader;
 import com.hjbalan.mycalendar.ui.widget.CalendarView;
 import com.hjbalan.mycalendar.utils.MyPreferencesManager;
+import com.hjbalan.mycalendar.utils.MyUtils;
 
 import org.joda.time.DateTimeUtils;
 
@@ -17,7 +18,6 @@ import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.provider.CalendarContract;
-import android.text.format.DateUtils;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -128,7 +128,7 @@ public class MainActivity extends Activity implements CalendarView.OnFocusdMonth
                         if (calendar != null) {
                             updateActionBarTitle(calendar.get(Calendar.YEAR),
                                     calendar.get(Calendar.MONTH));
-                            skipToSelectedDate(calendar.getTimeInMillis());
+                            skipToSelectedDate(calendar);
                             updateTodayButton();
                         }
                     }
@@ -140,7 +140,8 @@ public class MainActivity extends Activity implements CalendarView.OnFocusdMonth
         fragment.show(getFragmentManager(), SelectDateDialogFragment.TAG);
     }
 
-    private void skipToSelectedDate(final long toMillis) {
+    private void skipToSelectedDate(final Calendar calendar) {
+        final long toMillis = calendar.getTimeInMillis();
         if (toMillis > mCalendarView.getMaxDate()) {
             mCalendarView.setDate(mCalendarView.getMaxDate());
         } else {
@@ -150,23 +151,23 @@ public class MainActivity extends Activity implements CalendarView.OnFocusdMonth
         if (mAdapter.getCount() == 0) {
             return;
         }
-        int julianDay = (int) Math.ceil(DateTimeUtils.toJulianDay(toMillis));
+        int julianDay = MyUtils.getJulianDay(toMillis);
         if (julianDay > mAdapter.getMaxJulianDay() || julianDay < mAdapter.getMinJulianDay()) {
-            loadEvents(toMillis, toMillis);
+            loadEvents(toMillis, calendar);
         } else {
-            scrollTo(toMillis);
+            scrollTo(calendar);
         }
     }
 
-    private void loadEvents(final long startMillis, final long scrollToMillis) {
+    private void loadEvents(final long startMillis, final Calendar scrollToCalendar) {
         mIsLoading = true;
-        final int minDay = (int) Math.ceil(DateTimeUtils.toJulianDay(mCalendarView.getMinDate()));
-        final int maxDay = (int) Math.ceil(DateTimeUtils.toJulianDay(mCalendarView.getMaxDate()));
+        final int minDay = MyUtils.getJulianDay(mCalendarView.getMinDate());
+        final int maxDay = MyUtils.getJulianDay(mCalendarView.getMaxDate());
         new AsyncTask<Void, Void, ArrayList<Event>>() {
 
             @Override
             protected ArrayList<Event> doInBackground(Void... params) {
-                int startDay = (int) Math.ceil(DateTimeUtils.toJulianDay(startMillis));
+                int startDay = MyUtils.getJulianDay(startMillis);
                 ArrayList<Event> events = new ArrayList<>();
                 int start = startDay - 365;
                 if (start < minDay) {
@@ -205,7 +206,7 @@ public class MainActivity extends Activity implements CalendarView.OnFocusdMonth
                 mLvEvents.setAdapter(mAdapter);
                 mAdapter.setEvents(result);
                 computeIsItemFitsScreen();
-                scrollTo(scrollToMillis);
+                scrollTo(scrollToCalendar);
                 mIsLoading = false;
             }
         }.execute();
@@ -219,8 +220,8 @@ public class MainActivity extends Activity implements CalendarView.OnFocusdMonth
         }
     }
 
-    private void scrollTo(final long timeMillis) {
-        final int position = mAdapter.indexOfStartDay(timeMillis);
+    private void scrollTo(final Calendar scrollToCalendar) {
+        final int position = mAdapter.indexOfStartDay(scrollToCalendar.getTimeInMillis());
         if (position >= 0) {
             mLvEvents.setSelection(position);
         }
@@ -273,7 +274,7 @@ public class MainActivity extends Activity implements CalendarView.OnFocusdMonth
 
         if (mTodayDate == null) {
             mTodayDate = Calendar.getInstance(TimeZone.getDefault());
-            loadEvents(mTodayDate.getTimeInMillis(), mTodayDate.getTimeInMillis());
+            loadEvents(mTodayDate.getTimeInMillis(), mTodayDate);
             mBtnCurrentDate.startAnimation(mFadeOutAnim);
         } else {
             Calendar currentDate = Calendar.getInstance(TimeZone.getDefault());
@@ -291,7 +292,7 @@ public class MainActivity extends Activity implements CalendarView.OnFocusdMonth
         switch (v.getId()) {
             case R.id.btn_today:
                 if (mTodayDate != null) {
-                    skipToSelectedDate(mTodayDate.getTimeInMillis());
+                    skipToSelectedDate(mTodayDate);
                     updateActionBarTitle(mTodayDate.get(Calendar.YEAR),
                             mTodayDate.get(Calendar.MONTH));
                 }
@@ -310,8 +311,7 @@ public class MainActivity extends Activity implements CalendarView.OnFocusdMonth
 
     @Override
     public void onTouchDate(CalendarView view, Calendar touchedDate) {
-        // add 12 hours to fix julian day bug such as 2014/10/19 00:00:00
-        scrollTo(touchedDate.getTimeInMillis() + 12 * DateUtils.HOUR_IN_MILLIS);
+        scrollTo(touchedDate);
         updateTodayButton();
     }
 
@@ -355,22 +355,25 @@ public class MainActivity extends Activity implements CalendarView.OnFocusdMonth
         if (mIsItemFitScreen) {
             return;
         }
-
+        Calendar scrollToCalendar = Calendar.getInstance();
+        Event event = null;
         if (totalItemCount > 0 && ((firstVisibleItem + visibleItemCount) == totalItemCount)
                 && !mIsLoading) {
 
-            Event event = (Event) mAdapter.getItem(totalItemCount - 1);
+            event = (Event) mAdapter.getItem(totalItemCount - 1);
             Event scrollToEvent = (Event) mAdapter.getItem(firstVisibleItem);
             if (mCalendarView.isDateAfterMaxDate(event.startMillis)) {
                 return;
             }
-            loadEvents(event.startMillis, scrollToEvent.startMillis);
+            scrollToCalendar.setTimeInMillis(scrollToEvent.startMillis);
+            loadEvents(event.startMillis, scrollToCalendar);
         } else if (totalItemCount > 0 && firstVisibleItem == 0 && !mIsLoading) {
-            Event event = (Event) mAdapter.getItem(0);
+            event = (Event) mAdapter.getItem(0);
             if (mCalendarView.isDateBeforeMinDate(event.startMillis)) {
                 return;
             }
-            loadEvents(event.startMillis, event.startMillis);
+            scrollToCalendar.setTimeInMillis(event.startMillis);
+            loadEvents(event.startMillis, scrollToCalendar);
         }
     }
 

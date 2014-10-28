@@ -1,15 +1,12 @@
 package com.hjbalan.mycalendar.utils;
 
-import com.hjbalan.mycalendar.R;
+import org.joda.time.DateTimeUtils;
 
 import android.content.Context;
 import android.os.Build;
 import android.text.format.Time;
 
-import java.text.SimpleDateFormat;
 import java.util.Calendar;
-import java.util.Date;
-import java.util.Locale;
 
 /**
  * Created by alan on 14-9-24.
@@ -37,22 +34,21 @@ public class MyUtils {
         return Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN;
     }
 
-
-    /**
-     * format time millis to readable time
-     */
-    public static String getReadableTime(Context ctx, long timeMillis) {
-        sCurrentCalendar = Calendar.getInstance();
-        Calendar calendar = Calendar.getInstance();
-        calendar.setTimeInMillis(timeMillis);
-
-        Locale locale = ctx.getResources().getConfiguration().locale;
-        SimpleDateFormat sf = sCurrentCalendar.get(Calendar.YEAR) == calendar.get(Calendar.YEAR) ?
-                new SimpleDateFormat(ctx.getString(R.string.format_date_simple_partten), locale)
-                : new SimpleDateFormat(ctx.getString(R.string.format_date_parttern), locale);
-
-        return sf.format(new Date(timeMillis));
-    }
+//    /**
+//     * format time millis to readable time
+//     */
+//    public static String getReadableTime(Context ctx, long timeMillis) {
+//        sCurrentCalendar = Calendar.getInstance();
+//        Calendar calendar = Calendar.getInstance();
+//        calendar.setTimeInMillis(timeMillis);
+//
+//        Locale locale = ctx.getResources().getConfiguration().locale;
+//        SimpleDateFormat sf = sCurrentCalendar.get(Calendar.YEAR) == calendar.get(Calendar.YEAR) ?
+//                new SimpleDateFormat(ctx.getString(R.string.format_date_simple_partten), locale)
+//                : new SimpleDateFormat(ctx.getString(R.string.format_date_parttern), locale);
+//
+//        return sf.format(new Date(timeMillis));
+//    }
 
     /**
      * Get first day of week as java.util.Calendar constant.
@@ -112,6 +108,16 @@ public class MyUtils {
 //        } else {
 //            return Time.SUNDAY;
 //        }
+    }
+
+    public static int getJulianDay(final long timeMillis) {
+        Calendar c = Calendar.getInstance();
+        c.setTimeInMillis(timeMillis);
+        // add 12 hours to fix julian day bug such as 2014/10/19 00:00:00
+        if (c.get(Calendar.HOUR_OF_DAY) < 8) {
+            c.set(Calendar.HOUR_OF_DAY, 8);
+        }
+        return (int) DateTimeUtils.toJulianDayNumber(c.getTimeInMillis());
     }
 
 }
