@@ -13,6 +13,9 @@ import java.util.Calendar;
  */
 public class MyUtils {
 
+    // Set to 0 until we have UI to perform undo
+    public static final long UNDO_DELAY = 0;
+
     public static final int YEAR_MIN;
 
     public static final int YEAR_MAX;

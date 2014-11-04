@@ -4,18 +4,20 @@ import android.provider.CalendarContract.Attendees;
 import android.text.format.DateUtils;
 import android.util.Log;
 
+import java.io.Serializable;
+
 /**
  * Created by alan on 14-9-24.
  */
-public class Event implements Cloneable {
+public class Event implements Cloneable, Serializable {
 
     public long id;
 
     public int color;
 
-    public CharSequence title;
+    public String title;
 
-    public CharSequence location;
+    public String location;
 
     public boolean allDay;
 

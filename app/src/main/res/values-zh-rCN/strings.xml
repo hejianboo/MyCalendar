@@ -57,5 +57,6 @@
     <string name="edit_event_reminder">提醒</string>
     <string name="edit_event_repeat">重复</string>
     <string name="edit_event_select_calendar">日历</string>
+    <string name="edit_event_add_reminder">添加提醒</string>
 
 </resources>

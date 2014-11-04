@@ -2,7 +2,6 @@
 <resources>
 
     <string-array name="reminder">
-        <item>不提醒</item>
         <item>准时</item>
         <item>5分钟前</item>
         <item>15分钟前</item>
@@ -12,11 +11,6 @@
         <item>3小时前</item>
         <item>1天前</item>
         <item>2天前</item>
-    </string-array>
-
-    <string-array name="remind_method">
-        <item>通知</item>
-        <item>邮件</item>
     </string-array>
 
     <string-array name="repeat">

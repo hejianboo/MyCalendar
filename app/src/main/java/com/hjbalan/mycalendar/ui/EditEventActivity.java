@@ -5,15 +5,18 @@ import com.android.datetimepicker.date.DatePickerDialog;
 import com.android.datetimepicker.time.RadialPickerLayout;
 import com.android.datetimepicker.time.TimePickerDialog;
 import com.hjbalan.mycalendar.R;
-import com.hjbalan.mycalendar.entity.CalendarInfo;
-import com.hjbalan.mycalendar.event.Event;
-import com.hjbalan.mycalendar.utils.MyPreferencesManager;
+import com.hjbalan.mycalendar.event.CalendarEventModel;
+import com.hjbalan.mycalendar.event.EditEventHelper;
+import com.hjbalan.mycalendar.utils.CursorUtils;
 import com.hjbalan.mycalendar.utils.MyUtils;
 
 import android.app.DialogFragment;
 import android.content.AsyncQueryHandler;
 import android.content.ContentResolver;
+import android.content.ContentUris;
+import android.content.Intent;
 import android.database.Cursor;
+import android.database.MatrixCursor;
 import android.net.Uri;
 import android.os.Bundle;
 import android.provider.CalendarContract;
@@ -32,48 +35,33 @@ import android.widget.EditText;
 import android.widget.Spinner;
 import android.widget.TextView;
 
+import java.io.Serializable;
 import java.util.ArrayList;
+import java.util.Collections;
+
+import static android.provider.CalendarContract.EXTRA_EVENT_BEGIN_TIME;
+import static android.provider.CalendarContract.EXTRA_EVENT_END_TIME;
 
 public class EditEventActivity extends BaseActivity
         implements CompoundButton.OnCheckedChangeListener,
         View.OnClickListener, AdapterView.OnItemSelectedListener,
         SelectCalendarDialogFragment.SelectCalendarListener {
 
-    public static final String[] CALENDAR_PROJECTION = new String[]{
-            CalendarContract.Calendars._ID,                           // 0
-            CalendarContract.Calendars.ACCOUNT_NAME,                  // 1
-            CalendarContract.Calendars.CALENDAR_DISPLAY_NAME,         // 2
-            CalendarContract.Calendars.OWNER_ACCOUNT,                 // 3
-            CalendarContract.Calendars.NAME,                          // 4
-            CalendarContract.Calendars.ACCOUNT_TYPE                   // 5
-    };
+    public static final String EXTRA_EVENT_REMINDERS = "reminders";
 
-    // The indices for the projection array above.
-    private static final int PROJECTION_ID_INDEX = 0;
+    private static final String BUNDLE_KEY_EVENT_ID = "key_event_id";
 
-    private static final int PROJECTION_ACCOUNT_NAME_INDEX = 1;
+    private static final int TOKEN_CALENDARS = 1;
 
-    private static final int PROJECTION_DISPLAY_NAME_INDEX = 2;
+    private static final int TOKEN_EVENT = 2;
 
-    private static final int PROJECTION_OWNER_ACCOUNT_INDEX = 3;
-
-    private static final int PROJECTION_NAME = 4;
-
-    private static final int PROJECTION_ACCOUNT_TYPE = 5;
-
-    private static final int TOKEN_QUERY_CALENDAR = 1;
+    private static final int TOKEN_REMINDERS = 3;
 
     private static final String FRAG_TAG_DATE_PICKER = "datePickerDialogFragment";
 
     private static final String FRAG_TAG_TIME_PICKER = "timePickerDialogFragment";
 
     private static final String TAG = "EditActivity";
-
-    private Event mEvent = null;
-
-    private ArrayList<CalendarInfo> mCalendarInfos = new ArrayList<>();
-
-    private EventHandler mEventHandler;
 
     private EditText mEtTitle;
 
@@ -95,17 +83,11 @@ public class EditEventActivity extends BaseActivity
 
     private Spinner mSpinnerReminder;
 
-    private Spinner mSpinnerReminderMethod;
-
     private Spinner mSpinnerRepeat;
 
     private DatePickerDialog mDatePickerDialog;
 
     private TimePickerDialog mTimePickerDialog;
-
-    private Time mStartTime;
-
-    private Time mEndTime;
 
     private String mTimezone;
 
@@ -115,30 +97,55 @@ public class EditEventActivity extends BaseActivity
 
     private int mSelectedPosition = 0;
 
+    private CalendarEventModel mModel;
+
+    private CalendarEventModel mOriginalModel;
+
+    private EventHandler mHandler;
+
+    private EventBundle mEventBundle;
+
+    private EditEventHelper mHelper;
+
+    private Uri mUri = null;
+
+    private Time mStartTime;
+
+    private Time mEndTime;
+
+    private long mBegin = -1;
+
+    private long mEnd = -1;
+
+    private long mCalendarId = -1;
+
+    private ArrayList<CalendarEventModel.ReminderEntry> mReminders;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_edit_event);
-        mEvent = (Event) getIntent().getParcelableExtra("event");
-        if (mEvent == null) {
-            setTitle(R.string.title_activity_new_event);
-        }
+        setTitle(R.string.title_activity_new_event);
 
-        mEventHandler = new EventHandler(getContentResolver());
-
-        if (savedInstanceState == null) {
-            mEventHandler
-                    .startQuery(TOKEN_QUERY_CALENDAR, null, CalendarContract.Calendars.CONTENT_URI,
-                            CALENDAR_PROJECTION, null, null, null);
-        }
+        mHandler = new EventHandler(getContentResolver());
+        mModel = new CalendarEventModel();
+        mReminders = getReminderEntriesFromIntent();
 
         mTimezone = Time.getCurrentTimezone();
         mStartTime = new Time(mTimezone);
         mEndTime = new Time(mTimezone);
+
         mEmailValidator = new Rfc822Validator(null);
 
+        mHelper = new EditEventHelper(this);
+
         initView();
+
+        initEventInfo();
+
         preRenderView();
+
+        startQuery();
 
     }
 
@@ -153,7 +160,6 @@ public class EditEventActivity extends BaseActivity
         mEtDesc = (EditText) findViewById(R.id.et_desc);
         mBtnSelectCalendar = (Button) findViewById(R.id.btn_select_calendar);
         mSpinnerReminder = (Spinner) findViewById(R.id.sp_reminder);
-        mSpinnerReminderMethod = (Spinner) findViewById(R.id.sp_reminder_method);
         mSpinnerRepeat = (Spinner) findViewById(R.id.sp_repeat);
 
         mCbAllDay.setOnCheckedChangeListener(this);
@@ -164,23 +170,87 @@ public class EditEventActivity extends BaseActivity
         mBtnSelectEndTime.setOnClickListener(this);
         mBtnSelectCalendar.setOnClickListener(this);
         mSpinnerReminder.setOnItemSelectedListener(this);
-        mSpinnerReminderMethod.setOnItemSelectedListener(this);
         mSpinnerRepeat.setOnItemSelectedListener(this);
+    }
+
+    private void initEventInfo() {
+        Intent intent = getIntent();
+        Uri data = intent.getData();
+        long eventId = -1;
+        mCalendarId = -1;
+        if (data != null) {
+            try {
+                eventId = Long.parseLong(data.getLastPathSegment());
+            } catch (NumberFormatException e) {
+
+            }
+            if (eventId != -1) {
+                mModel.mId = eventId;
+                mUri = ContentUris.withAppendedId(CalendarContract.Events.CONTENT_URI, eventId);
+            }
+            mBegin = intent.getLongExtra(EXTRA_EVENT_BEGIN_TIME, -1);
+            mEnd = intent.getLongExtra(EXTRA_EVENT_END_TIME, -1);
+
+        } else if (mEventBundle != null) {
+            if (mEventBundle.id != -1) {
+                mModel.mId = mEventBundle.id;
+                mUri = ContentUris
+                        .withAppendedId(CalendarContract.Events.CONTENT_URI, mEventBundle.id);
+            }
+            mBegin = mEventBundle.start;
+            mEnd = mEventBundle.end;
+        }
+
+        if (mReminders != null) {
+            mModel.mReminders = mReminders;
+        }
+
+        if (mBegin <= 0) {
+            // use a default value instead
+            mBegin = mHelper.constructDefaultStartTime(System.currentTimeMillis());
+        }
+        if (mEnd < mBegin) {
+            // use a default value instead
+            mEnd = mHelper.constructDefaultEndTime(mBegin);
+        }
+
+        mStartTime.set(mBegin);
+        mEndTime.set(mEnd);
 
     }
 
-    private void preRenderView() {
-        if (mEvent == null) {
-            mStartTime.set(System.currentTimeMillis());
-            mEndTime.set(mStartTime.toMillis(false) + DateUtils.HOUR_IN_MILLIS);
-            setDate(mBtnSelectStartDate, mStartTime.toMillis(false));
-            setTime(mBtnSelectStartTime, mStartTime.toMillis(false));
-            setDate(mBtnSelectEndDate, mEndTime.toMillis(false));
-            setTime(mBtnSelectEndTime, mEndTime.toMillis(false));
-            return;
+    private void startQuery() {
+        // Kick off the query for the event
+        boolean newEvent = mUri == null;
+        if (!newEvent) {
+            mHandler.startQuery(TOKEN_EVENT, null, mUri, EditEventHelper.EVENT_PROJECTION,
+                    null /* selection */, null /* selection args */, null /* sort order */);
         } else {
+            mModel.mOriginalStart = mBegin;
+            mModel.mOriginalEnd = mEnd;
+            mModel.mStart = mBegin;
+            mModel.mEnd = mEnd;
+            mModel.mCalendarId = mCalendarId;
 
+            // Start a query in the background to read the list of calendars
+            mHandler.startQuery(TOKEN_CALENDARS, null, CalendarContract.Calendars.CONTENT_URI,
+                    EditEventHelper.CALENDARS_PROJECTION,
+                    EditEventHelper.CALENDARS_WHERE_WRITEABLE_VISIBLE, null /* selection args */,
+                    null /* sort order */);
         }
+    }
+
+    private void preRenderView() {
+        setDate(mBtnSelectStartDate, mStartTime.toMillis(false));
+        setTime(mBtnSelectStartTime, mStartTime.toMillis(false));
+        setDate(mBtnSelectEndDate, mEndTime.toMillis(false));
+        setTime(mBtnSelectEndTime, mEndTime.toMillis(false));
+    }
+
+    private ArrayList<CalendarEventModel.ReminderEntry> getReminderEntriesFromIntent() {
+        Intent intent = getIntent();
+        return (ArrayList<CalendarEventModel.ReminderEntry>) intent
+                .getSerializableExtra(EXTRA_EVENT_REMINDERS);
     }
 
     private void setDate(TextView view, long millis) {
@@ -260,14 +330,6 @@ public class EditEventActivity extends BaseActivity
         return 0;
     }
 
-    private Event fillEventFromUI() {
-        if (mEvent == null) {
-            mEvent = Event.newInstance();
-        }
-
-        return mEvent;
-    }
-
     @Override
     public void onClick(View v) {
         switch (v.getId()) {
@@ -288,11 +350,9 @@ public class EditEventActivity extends BaseActivity
                 break;
 
             case R.id.btn_select_calendar:
-                if (mCalendarInfos != null && mCalendarInfos.size() > 0) {
-                    SelectCalendarDialogFragment
-                            .newInstance(EditEventActivity.this, mCalendarInfos, mSelectedPosition)
-                            .show(getFragmentManager(), SelectCalendarDialogFragment.TAG);
-                }
+//                    SelectCalendarDialogFragment
+//                            .newInstance(EditEventActivity.this, mCalendarInfos, mSelectedPosition)
+//                            .show(getFragmentManager(), SelectCalendarDialogFragment.TAG);
 
                 break;
 
@@ -332,10 +392,6 @@ public class EditEventActivity extends BaseActivity
 
                 break;
 
-            case R.id.sp_reminder_method:
-
-                break;
-
             case R.id.sp_repeat:
 
                 break;
@@ -353,9 +409,156 @@ public class EditEventActivity extends BaseActivity
     @Override
     public void onCalendarSelected(DialogFragment dialogFragment, int position) {
         mSelectedPosition = position;
-        CalendarInfo calendarInfo = mCalendarInfos.get(position);
-        MyPreferencesManager.getInstance().saveSelectedCalendarName(calendarInfo.calendarName);
-        mBtnSelectCalendar.setText(calendarInfo.displayName);
+//        CalendarInfo calendarInfo = mCalendarInfos.get(position);
+//        MyPreferencesManager.getInstance().saveSelectedCalendarName(calendarInfo.calendarName);
+//        mBtnSelectCalendar.setText(calendarInfo.displayName);
+    }
+
+    private static class EventBundle implements Serializable {
+
+        private static final long serialVersionUID = 1L;
+
+        long id = -1;
+
+        long start = -1;
+
+        long end = -1;
+    }
+
+    private class EventHandler extends AsyncQueryHandler {
+
+        public EventHandler(ContentResolver cr) {
+            super(cr);
+        }
+
+        @Override
+        protected void onInsertComplete(int token, Object cookie, Uri uri) {
+            if (isFinishing()) {
+                return;
+            } else {
+
+            }
+        }
+
+        @Override
+        protected void onUpdateComplete(int token, Object cookie, int result) {
+            if (isFinishing()) {
+                return;
+            } else {
+
+            }
+        }
+
+        @Override
+        protected void onQueryComplete(int token, Object cookie, Cursor cursor) {
+            if (cursor == null) {
+                return;
+            }
+            if (isFinishing()) {
+                cursor.close();
+                return;
+            }
+            long eventId;
+            switch (token) {
+                case TOKEN_CALENDARS:
+                    try {
+                        if (mModel.mId == -1) {
+                            // Populate Calendar spinner only if no event id is set.
+                            MatrixCursor matrixCursor = CursorUtils.matrixCursorFromCursor(cursor);
+                            //TODO: set calendars ui
+                            Log.d("edit", "edit calendar count is " + matrixCursor.getCount());
+                        } else {
+                            // Populate model for an existing event
+                            EditEventHelper.setModelFromCalendarCursor(mModel, cursor);
+                            EditEventHelper.setModelFromCalendarCursor(mOriginalModel, cursor);
+                        }
+                    } finally {
+                        cursor.close();
+                    }
+                    break;
+
+                case TOKEN_EVENT:
+                    if (cursor.getCount() == 0) {
+                        cursor.close();
+                        return;
+                    }
+
+                    mOriginalModel = new CalendarEventModel();
+
+                    EditEventHelper.setModelFromCursor(mOriginalModel, cursor);
+                    EditEventHelper.setModelFromCursor(mModel, cursor);
+                    cursor.close();
+
+                    mOriginalModel.mUri = mUri.toString();
+
+                    mModel.mUri = mUri.toString();
+                    mModel.mOriginalStart = mBegin;
+                    mModel.mOriginalEnd = mEnd;
+                    mModel.mStart = mBegin;
+                    mModel.mEnd = mEnd;
+                    eventId = mModel.mId;
+
+                    // TOKEN_REMINDERS
+                    if (mModel.mHasAlarm && mReminders == null) {
+                        Uri rUri = CalendarContract.Reminders.CONTENT_URI;
+                        String[] remArgs = {
+                                Long.toString(eventId)
+                        };
+                        mHandler.startQuery(TOKEN_REMINDERS, null, rUri,
+                                EditEventHelper.REMINDERS_PROJECTION,
+                                EditEventHelper.REMINDERS_WHERE /* selection */,
+                                remArgs /* selection args */, null /* sort order */);
+                    } else {
+                        if (mReminders == null) {
+                            // mReminders should not be null.
+                            mReminders = new ArrayList<CalendarEventModel.ReminderEntry>();
+                        } else {
+                            Collections.sort(mReminders);
+                        }
+                        mOriginalModel.mReminders = mReminders;
+                        mModel.mReminders =
+                                (ArrayList<CalendarEventModel.ReminderEntry>) mReminders.clone();
+                    }
+
+                    // TOKEN_CALENDARS
+                    String[] selArgs = {
+                            Long.toString(mModel.mCalendarId)
+                    };
+                    mHandler.startQuery(TOKEN_CALENDARS, null,
+                            CalendarContract.Calendars.CONTENT_URI,
+                            EditEventHelper.CALENDARS_PROJECTION, EditEventHelper.CALENDARS_WHERE,
+                            selArgs /* selection args */, null /* sort order */);
+                    // TODO: set event ui
+                    break;
+
+                case TOKEN_REMINDERS:
+                    try {
+                        // Add all reminders to the models
+                        while (cursor.moveToNext()) {
+                            int minutes = cursor.getInt(EditEventHelper.REMINDERS_INDEX_MINUTES);
+                            int method = cursor.getInt(EditEventHelper.REMINDERS_INDEX_METHOD);
+                            CalendarEventModel.ReminderEntry re = CalendarEventModel.ReminderEntry
+                                    .valueOf(minutes, method);
+                            mModel.mReminders.add(re);
+                            mOriginalModel.mReminders.add(re);
+                        }
+
+                        // Sort appropriately for display
+                        Collections.sort(mModel.mReminders);
+                        Collections.sort(mOriginalModel.mReminders);
+                    } finally {
+                        cursor.close();
+                    }
+
+                    // TODO: set reminder ui
+                    break;
+
+                default:
+                    cursor.close();
+                    break;
+
+            }
+        }
     }
 
     private class DateListener implements DatePickerDialog.OnDateSetListener {
@@ -470,71 +673,6 @@ public class EditEventActivity extends BaseActivity
             setDate(mBtnSelectEndDate, endMillis);
             setTime(mBtnSelectStartTime, startMillis);
             setTime(mBtnSelectEndTime, endMillis);
-        }
-    }
-
-    private class EventHandler extends AsyncQueryHandler {
-
-        public EventHandler(ContentResolver cr) {
-            super(cr);
-        }
-
-        @Override
-        protected void onInsertComplete(int token, Object cookie, Uri uri) {
-            if (isFinishing()) {
-                return;
-            } else {
-
-            }
-        }
-
-        @Override
-        protected void onUpdateComplete(int token, Object cookie, int result) {
-            if (isFinishing()) {
-                return;
-            } else {
-
-            }
-        }
-
-        @Override
-        protected void onQueryComplete(int token, Object cookie, Cursor cursor) {
-            if (cursor == null) {
-                return;
-            }
-            if (isFinishing()) {
-                cursor.close();
-            } else {
-                mCalendarInfos.clear();
-                if (cursor.getCount() > 0) {
-                    String name = MyPreferencesManager.getInstance().getSelectedCalendarName();
-                    while (cursor.moveToNext()) {
-                        if (!cursor.getString(PROJECTION_ACCOUNT_NAME_INDEX)
-                                .equals(cursor.getString(PROJECTION_OWNER_ACCOUNT_INDEX))) {
-                            continue;
-                        }
-                        CalendarInfo calendarInfo = new CalendarInfo();
-                        calendarInfo.id = cursor.getInt(PROJECTION_ID_INDEX);
-                        calendarInfo.accountName = cursor.getString(
-                                PROJECTION_ACCOUNT_NAME_INDEX);
-                        calendarInfo.displayName = cursor.getString(
-                                PROJECTION_DISPLAY_NAME_INDEX);
-                        calendarInfo.ownerAccount = cursor.getString(
-                                PROJECTION_OWNER_ACCOUNT_INDEX);
-                        calendarInfo.calendarName = cursor.getString(PROJECTION_NAME);
-                        calendarInfo.accountType = cursor.getString(
-                                PROJECTION_ACCOUNT_TYPE);
-                        mCalendarInfos.add(calendarInfo);
-                        if (calendarInfo.calendarName.equals(name)) {
-                            mSelectedPosition = cursor.getPosition();
-                        }
-                        Log.d("Setting", "calendar info is \r\n" + calendarInfo.toString());
-                    }
-                }
-                if (mCalendarInfos.size() > 0) {
-                    mBtnSelectCalendar.setText(mCalendarInfos.get(mSelectedPosition).displayName);
-                }
-            }
         }
     }
 
