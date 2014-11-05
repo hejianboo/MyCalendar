@@ -21,7 +21,7 @@ public class CalendarInfo implements Parcelable {
         }
     };
 
-    public int id;
+    public long id;
 
     public String accountName;
 
@@ -29,9 +29,11 @@ public class CalendarInfo implements Parcelable {
 
     public String ownerAccount;
 
-    public String calendarName;
-
     public String accountType;
+
+    public String allowedReminders;
+
+    public int maxReminders;
 
 
     public CalendarInfo() {
@@ -39,17 +41,19 @@ public class CalendarInfo implements Parcelable {
         accountName = "";
         displayName = "";
         ownerAccount = "";
-        calendarName = "";
         accountType = "";
+        allowedReminders = "";
+        maxReminders = 0;
     }
 
     public CalendarInfo(Parcel in) {
-        id = in.readInt();
+        id = in.readLong();
         accountName = in.readString();
         displayName = in.readString();
         ownerAccount = in.readString();
-        calendarName = in.readString();
         accountType = in.readString();
+        allowedReminders = in.readString();
+        maxReminders = in.readInt();
     }
 
     @Override
@@ -59,12 +63,13 @@ public class CalendarInfo implements Parcelable {
 
     @Override
     public void writeToParcel(Parcel dest, int flags) {
-        dest.writeInt(id);
+        dest.writeLong(id);
         dest.writeString(accountName);
         dest.writeString(displayName);
         dest.writeString(ownerAccount);
-        dest.writeString(calendarName);
         dest.writeString(accountType);
+        dest.writeString(allowedReminders);
+        dest.writeInt(maxReminders);
     }
 
     @Override
@@ -73,7 +78,8 @@ public class CalendarInfo implements Parcelable {
                 "accountName = " + accountName + "\r\n" +
                 "displayName = " + displayName + "\r\n" +
                 "ownerAccount = " + ownerAccount + "\r\n" +
-                "calendarName = " + calendarName + "\r\n" +
-                "accountType = " + accountType + "\r\n";
+                "accountType = " + accountType + "\r\n" +
+                "allowedReminders = " + allowedReminders +
+                "maxReminders = " + maxReminders;
     }
 }

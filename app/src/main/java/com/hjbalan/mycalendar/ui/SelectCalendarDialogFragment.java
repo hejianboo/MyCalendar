@@ -4,7 +4,6 @@ import com.hjbalan.mycalendar.R;
 import com.hjbalan.mycalendar.entity.CalendarInfo;
 
 import android.app.Activity;
-import android.app.DialogFragment;
 import android.content.Context;
 import android.os.Bundle;
 import android.view.LayoutInflater;
@@ -27,8 +26,7 @@ public class SelectCalendarDialogFragment extends BaseDialogFragment {
     private SelectCalendarListener mListener;
 
     public static SelectCalendarDialogFragment newInstance(Context ctx,
-            ArrayList<CalendarInfo> calendars,
-            int selectedPosition) {
+            ArrayList<CalendarInfo> calendars, long selectedCalendarId) {
         BaseDialogFragment.Builder builder = new Builder(ctx);
         builder.setContentView(
                 LayoutInflater.from(ctx).inflate(R.layout.dialog_select_calendar, null))
@@ -37,7 +35,7 @@ public class SelectCalendarDialogFragment extends BaseDialogFragment {
         SelectCalendarDialogFragment fragment = new SelectCalendarDialogFragment();
         Bundle b = new Bundle();
         b.putParcelableArrayList("calendars", calendars);
-        b.putInt("selected_position", selectedPosition);
+        b.putLong("selected_calendar_id", selectedCalendarId);
         fragment.setArguments(b);
         fragment.setBuilder(builder);
         return fragment;
@@ -64,17 +62,17 @@ public class SelectCalendarDialogFragment extends BaseDialogFragment {
     @Override
     protected void customContentView(View contentView) {
         Bundle b = getArguments();
-        int selectedPosition = b.getInt("selected_position", 0);
+        long selectedCalendarId = b.getLong("selected_calendar_id", -1);
         ArrayList<CalendarInfo> calendars = b.getParcelableArrayList("calendars");
         ListView lv = (ListView) contentView.findViewById(R.id.lv_calendars);
         CalendarAdapter adapter = new CalendarAdapter(getActivity(), calendars);
-        adapter.setSelectedPosition(selectedPosition);
+        adapter.setSelectedCalendarId(selectedCalendarId);
         lv.setAdapter(adapter);
     }
 
     public interface SelectCalendarListener {
 
-        public void onCalendarSelected(DialogFragment dialogFragment, int position);
+        public void onCalendarSelected(CalendarInfo selectedCalendar);
     }
 
     static class ViewHolder {
@@ -86,7 +84,7 @@ public class SelectCalendarDialogFragment extends BaseDialogFragment {
 
     private class CalendarAdapter extends BaseAdapter implements View.OnClickListener {
 
-        private int selectedPosition = 0;
+        private long selectedCalendarId = -1;
 
         private LayoutInflater inflater;
 
@@ -114,7 +112,7 @@ public class SelectCalendarDialogFragment extends BaseDialogFragment {
             CalendarInfo calendarInfo = (CalendarInfo) getItem(position);
             holder.tvCalendarAccount.setText(calendarInfo.accountName);
             holder.rbSelected.setText(calendarInfo.displayName);
-            holder.rbSelected.setChecked(position == selectedPosition);
+            holder.rbSelected.setChecked(calendarInfo.id == selectedCalendarId);
             holder.rbSelected.setOnClickListener(this);
             holder.rbSelected.setTag(position);
 
@@ -136,18 +134,19 @@ public class SelectCalendarDialogFragment extends BaseDialogFragment {
             return 0;
         }
 
-        public void setSelectedPosition(int selectedPosition) {
-            this.selectedPosition = selectedPosition;
+        public void setSelectedCalendarId(long selectedCalendarId) {
+            this.selectedCalendarId = selectedCalendarId;
         }
 
         @Override
         public void onClick(View v) {
             int position = (int) v.getTag();
-            setSelectedPosition(position);
+            CalendarInfo calendarInfo = data.get(position);
+            setSelectedCalendarId(calendarInfo.id);
             notifyDataSetChanged();
             dismiss();
             if (mListener != null) {
-                mListener.onCalendarSelected(SelectCalendarDialogFragment.this, position);
+                mListener.onCalendarSelected(calendarInfo);
             }
         }
     }

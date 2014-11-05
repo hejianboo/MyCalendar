@@ -17,6 +17,7 @@
 package com.hjbalan.mycalendar.event;
 
 import com.android.calendarcommon.EventRecurrence;
+import com.hjbalan.mycalendar.entity.CalendarInfo;
 import com.hjbalan.mycalendar.ui.BaseActivity;
 import com.hjbalan.mycalendar.utils.AsyncQueryService;
 import com.hjbalan.mycalendar.utils.MyUtils;
@@ -420,6 +421,26 @@ public class EditEventHelper {
         model.mOwnerAccount = cursor.getString(EVENT_INDEX_OWNER_ACCOUNT);
         model.mEnd = cursor.getLong(EVENT_INDEX_DTEND);
         model.mModelUpdatedWithEventCursor = true;
+    }
+
+    public static ArrayList<CalendarInfo> getCalendarInfoFromCursor(Cursor cursor) {
+        if (cursor == null) {
+            return null;
+        }
+        ArrayList<CalendarInfo> calendarInfos = new ArrayList<>();
+        cursor.moveToPosition(-1);
+        while (cursor.moveToNext()) {
+            CalendarInfo calendarInfo = new CalendarInfo();
+            calendarInfo.displayName = cursor.getString(CALENDARS_INDEX_DISPLAY_NAME);
+            calendarInfo.accountName = cursor.getString(CALENDARS_INDEX_ACCOUNT_NAME);
+            calendarInfo.accountType = cursor.getString(CALENDARS_INDEX_ACCOUNT_TYPE);
+            calendarInfo.maxReminders = cursor.getInt(CALENDARS_INDEX_MAX_REMINDERS);
+            calendarInfo.allowedReminders = cursor.getString(CALENDARS_INDEX_ALLOWED_REMINDERS);
+            calendarInfo.ownerAccount = cursor.getString(CALENDARS_INDEX_OWNER_ACCOUNT);
+            calendarInfo.id = cursor.getLong(CALENDARS_INDEX_ID);
+            calendarInfos.add(calendarInfo);
+        }
+        return calendarInfos;
     }
 
     /**

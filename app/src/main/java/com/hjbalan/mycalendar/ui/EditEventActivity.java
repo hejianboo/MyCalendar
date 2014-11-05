@@ -5,18 +5,17 @@ import com.android.datetimepicker.date.DatePickerDialog;
 import com.android.datetimepicker.time.RadialPickerLayout;
 import com.android.datetimepicker.time.TimePickerDialog;
 import com.hjbalan.mycalendar.R;
+import com.hjbalan.mycalendar.entity.CalendarInfo;
 import com.hjbalan.mycalendar.event.CalendarEventModel;
 import com.hjbalan.mycalendar.event.EditEventHelper;
-import com.hjbalan.mycalendar.utils.CursorUtils;
+import com.hjbalan.mycalendar.utils.MyPreferencesManager;
 import com.hjbalan.mycalendar.utils.MyUtils;
 
-import android.app.DialogFragment;
 import android.content.AsyncQueryHandler;
 import android.content.ContentResolver;
 import android.content.ContentUris;
 import android.content.Intent;
 import android.database.Cursor;
-import android.database.MatrixCursor;
 import android.net.Uri;
 import android.os.Bundle;
 import android.provider.CalendarContract;
@@ -95,8 +94,6 @@ public class EditEventActivity extends BaseActivity
 
     private Rfc822Validator mEmailValidator;
 
-    private int mSelectedPosition = 0;
-
     private CalendarEventModel mModel;
 
     private CalendarEventModel mOriginalModel;
@@ -120,6 +117,8 @@ public class EditEventActivity extends BaseActivity
     private long mCalendarId = -1;
 
     private ArrayList<CalendarEventModel.ReminderEntry> mReminders;
+
+    private ArrayList<CalendarInfo> mCalendarInfos;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -350,9 +349,13 @@ public class EditEventActivity extends BaseActivity
                 break;
 
             case R.id.btn_select_calendar:
-//                    SelectCalendarDialogFragment
-//                            .newInstance(EditEventActivity.this, mCalendarInfos, mSelectedPosition)
-//                            .show(getFragmentManager(), SelectCalendarDialogFragment.TAG);
+                if (mCalendarInfos != null && mCalendarInfos.size() > 0) {
+                    long selectedCalendarId = MyPreferencesManager.getInstance()
+                            .getSelectedCalendarId();
+                    SelectCalendarDialogFragment
+                            .newInstance(EditEventActivity.this, mCalendarInfos, selectedCalendarId)
+                            .show(getFragmentManager(), SelectCalendarDialogFragment.TAG);
+                }
 
                 break;
 
@@ -407,11 +410,29 @@ public class EditEventActivity extends BaseActivity
     }
 
     @Override
-    public void onCalendarSelected(DialogFragment dialogFragment, int position) {
-        mSelectedPosition = position;
-//        CalendarInfo calendarInfo = mCalendarInfos.get(position);
-//        MyPreferencesManager.getInstance().saveSelectedCalendarName(calendarInfo.calendarName);
-//        mBtnSelectCalendar.setText(calendarInfo.displayName);
+    public void onCalendarSelected(CalendarInfo selectedCalendar) {
+        MyPreferencesManager.getInstance().saveSelectedCalendarId(selectedCalendar.id);
+        mModel.mCalendarId = selectedCalendar.id;
+        mBtnSelectCalendar.setText(selectedCalendar.displayName);
+    }
+
+    private void setDefaultCalendar() {
+        long selectedCalendarId = MyPreferencesManager.getInstance().getSelectedCalendarId();
+        if (mCalendarInfos != null && mCalendarInfos.size() > 0) {
+            CalendarInfo selectedCalendar = null;
+            for (CalendarInfo calendarInfo : mCalendarInfos) {
+                if (calendarInfo.id == selectedCalendarId) {
+                    selectedCalendar = calendarInfo;
+                    break;
+                }
+            }
+            if (selectedCalendar == null) {
+                selectedCalendar = mCalendarInfos.get(0);
+            }
+
+            MyPreferencesManager.getInstance().saveSelectedCalendarId(selectedCalendar.id);
+            mBtnSelectCalendar.setText(selectedCalendar.displayName);
+        }
     }
 
     private static class EventBundle implements Serializable {
@@ -464,13 +485,14 @@ public class EditEventActivity extends BaseActivity
                     try {
                         if (mModel.mId == -1) {
                             // Populate Calendar spinner only if no event id is set.
-                            MatrixCursor matrixCursor = CursorUtils.matrixCursorFromCursor(cursor);
-                            //TODO: set calendars ui
-                            Log.d("edit", "edit calendar count is " + matrixCursor.getCount());
+//                            MatrixCursor matrixCursor = CursorUtils.matrixCursorFromCursor(cursor);
+                            mCalendarInfos = EditEventHelper.getCalendarInfoFromCursor(cursor);
+                            setDefaultCalendar();
                         } else {
                             // Populate model for an existing event
                             EditEventHelper.setModelFromCalendarCursor(mModel, cursor);
                             EditEventHelper.setModelFromCalendarCursor(mOriginalModel, cursor);
+                            mBtnSelectCalendar.setText(mModel.mCalendarDisplayName);
                         }
                     } finally {
                         cursor.close();

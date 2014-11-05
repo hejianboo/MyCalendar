@@ -36,12 +36,12 @@ public class MyPreferencesManager {
         return getBoolean(SHOW_CHINESE_CAL, false);
     }
 
-    public void saveSelectedCalendarName(String name) {
-        putString(SELECTED_CALENDAR, name);
+    public void saveSelectedCalendarId(long selectedCalendarId) {
+        putLong(SELECTED_CALENDAR, selectedCalendarId);
     }
 
-    public String getSelectedCalendarName() {
-        return getString(SELECTED_CALENDAR);
+    public long getSelectedCalendarId() {
+        return getLong(SELECTED_CALENDAR);
     }
 
     public void putBoolean(String key, boolean value) {
@@ -71,7 +71,7 @@ public class MyPreferencesManager {
     }
 
     public long getLong(String key) {
-        return mPreferences.getLong(key, System.currentTimeMillis());
+        return mPreferences.getLong(key, -1);
     }
 
     private SharedPreferences.Editor getEditor() {
