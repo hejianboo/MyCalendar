@@ -153,12 +153,10 @@
             android:textSize="@dimen/t4" />
 
         <LinearLayout
+            android:id="@+id/ll_reminder_container"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:animateLayoutChanges="true"
             android:orientation="vertical">
-
-            <include layout="@layout/item_reminder_view" />
 
             <Button
                 android:id="@+id/btn_add_reminder"

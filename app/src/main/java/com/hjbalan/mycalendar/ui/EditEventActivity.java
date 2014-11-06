@@ -31,6 +31,8 @@ import android.widget.Button;
 import android.widget.CheckBox;
 import android.widget.CompoundButton;
 import android.widget.EditText;
+import android.widget.ImageButton;
+import android.widget.LinearLayout;
 import android.widget.Spinner;
 import android.widget.TextView;
 
@@ -80,7 +82,9 @@ public class EditEventActivity extends BaseActivity
 
     private Button mBtnSelectCalendar;
 
-    private Spinner mSpinnerReminder;
+    private LinearLayout mLinearLayoutReminders;
+
+    private Button mBtnAddReminder;
 
     private Spinner mSpinnerRepeat;
 
@@ -158,7 +162,8 @@ public class EditEventActivity extends BaseActivity
         mBtnSelectEndTime = (Button) findViewById(R.id.btn_time_end);
         mEtDesc = (EditText) findViewById(R.id.et_desc);
         mBtnSelectCalendar = (Button) findViewById(R.id.btn_select_calendar);
-        mSpinnerReminder = (Spinner) findViewById(R.id.sp_reminder);
+        mLinearLayoutReminders = (LinearLayout) findViewById(R.id.ll_reminder_container);
+        mBtnAddReminder = (Button) findViewById(R.id.btn_add_reminder);
         mSpinnerRepeat = (Spinner) findViewById(R.id.sp_repeat);
 
         mCbAllDay.setOnCheckedChangeListener(this);
@@ -168,7 +173,7 @@ public class EditEventActivity extends BaseActivity
         mBtnSelectEndDate.setOnClickListener(this);
         mBtnSelectEndTime.setOnClickListener(this);
         mBtnSelectCalendar.setOnClickListener(this);
-        mSpinnerReminder.setOnItemSelectedListener(this);
+        mBtnAddReminder.setOnClickListener(this);
         mSpinnerRepeat.setOnItemSelectedListener(this);
     }
 
@@ -348,6 +353,17 @@ public class EditEventActivity extends BaseActivity
                 showTimePickerDialog(v, mEndTime);
                 break;
 
+            case R.id.btn_add_reminder:
+                addReminderView();
+                break;
+
+            case R.id.ib_delete_reminder:
+                int index = (int) v.getTag();
+                if (mLinearLayoutReminders.getChildCount() > 1) {
+                    mLinearLayoutReminders.removeViewAt(index);
+                }
+                break;
+
             case R.id.btn_select_calendar:
                 if (mCalendarInfos != null && mCalendarInfos.size() > 0) {
                     long selectedCalendarId = MyPreferencesManager.getInstance()
@@ -386,6 +402,17 @@ public class EditEventActivity extends BaseActivity
         mTimePickerDialog = TimePickerDialog.newInstance(new TimeListener(v),
                 time.hour, time.minute, DateFormat.is24HourFormat(this));
         mTimePickerDialog.show(getFragmentManager(), FRAG_TAG_TIME_PICKER);
+    }
+
+    private void addReminderView() {
+        View view = getLayoutInflater().inflate(R.layout.item_reminder_view, null);
+        int index = mLinearLayoutReminders.getChildCount() - 1;
+        Spinner spinner = (Spinner) view.findViewById(R.id.sp_reminder);
+        spinner.setOnItemSelectedListener(this);
+        ImageButton imageButton = (ImageButton) view.findViewById(R.id.ib_delete_reminder);
+        imageButton.setOnClickListener(this);
+        imageButton.setTag(index);
+        mLinearLayoutReminders.addView(view, index);
     }
 
     @Override

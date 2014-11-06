@@ -4,8 +4,6 @@ import com.hjbalan.mycalendar.R;
 import com.hjbalan.mycalendar.event.Event;
 import com.hjbalan.mycalendar.utils.MyUtils;
 
-import org.joda.time.DateTimeUtils;
-
 import android.content.Context;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -139,18 +137,13 @@ public class EventsAdapter extends BaseAdapter implements
         int month2 = c2.get(Calendar.MONTH) + 1;
         int day2 = c2.get(Calendar.DAY_OF_MONTH);
 
-        int diff = (int) Math
-                .ceil((DateTimeUtils.toJulianDay(millis))
-                        - (int) Math.ceil(DateTimeUtils.toJulianDay(c
-                        .getTimeInMillis())));
-        String s1 = "";
-        String s2 = "";
+        int diff = MyUtils.getJulianDay(millis) - MyUtils.getJulianDay(c.getTimeInMillis());
+        String s1;
+        String s2;
         if (year == year2) {
-            s1 = mInflater.getContext().getString(R.string.data_simple_format,
-                    month2, day2);
+            s1 = mInflater.getContext().getString(R.string.data_simple_format, month2, day2);
         } else {
-            s1 = mInflater.getContext().getString(R.string.date_full_format,
-                    year2, month2, day2);
+            s1 = mInflater.getContext().getString(R.string.date_full_format, year2, month2, day2);
         }
         if (diff == 0) {
             s2 = mInflater.getContext().getString(R.string.today);
