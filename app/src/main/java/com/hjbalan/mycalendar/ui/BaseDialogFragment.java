@@ -11,6 +11,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.view.ViewGroup;
+import android.view.ViewParent;
 import android.view.Window;
 import android.widget.Button;
 import android.widget.FrameLayout;
@@ -30,12 +31,16 @@ public class BaseDialogFragment extends DialogFragment implements OnClickListene
 
     private Button btnNegative;
 
+
+    @Override
+    public void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        setRetainInstance(true);
+    }
+
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
             Bundle savedInstanceState) {
-        if (mBuilder == null) {
-            return super.onCreateView(inflater, container, savedInstanceState);
-        }
         View dialogView = inflater.inflate(R.layout.dialog_common, container, false);
         tvTitle = (TextView) dialogView.findViewById(R.id.tv_title);
         tvMessage = (TextView) dialogView.findViewById(R.id.tv_message);
@@ -51,6 +56,10 @@ public class BaseDialogFragment extends DialogFragment implements OnClickListene
 
         if (mBuilder.mContentView != null) {
             content.removeAllViews();
+            ViewParent parent = mBuilder.mContentView.getParent();
+            if (parent != null) {
+                ((ViewGroup) parent).removeView(mBuilder.mContentView);
+            }
             content.addView(mBuilder.mContentView);
             customContentView(mBuilder.mContentView);
         } else if (!TextUtils.isEmpty(mBuilder.mMessage)) {
@@ -112,6 +121,14 @@ public class BaseDialogFragment extends DialogFragment implements OnClickListene
         }
     }
 
+    @Override
+    public void onDestroyView() {
+        if (getDialog() != null && getRetainInstance()) {
+            getDialog().setDismissMessage(null);
+        }
+        super.onDestroyView();
+    }
+
     protected void customContentView(View contentView) {
 
     }
@@ -165,11 +182,6 @@ public class BaseDialogFragment extends DialogFragment implements OnClickListene
              *               method.
              */
             public void onDismiss(DialogFragment dialog);
-        }
-
-        interface OnCancelListener {
-
-            public void onCancel(DialogFragment dialog);
         }
 
     }
